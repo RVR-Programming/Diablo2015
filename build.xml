@@ -21,11 +21,12 @@
 
   <!-- Any other property in build.properties can also be overridden. -->
   
+  <property name="robot.class" value="diablo2015.Robot" />
   <property file="${user.home}/wpilib/wpilib.properties"/>
   <property file="build.properties"/>
   <property file="${user.home}/wpilib/java/${version}/ant/build.properties"/>
   
-  <import file="nbproject/build-impl.xml"/>
+  <!--<import file="nbproject/build-impl.xml"/> -->
   <import file="${wpilib.ant.dir}/build.xml"/>
 
 </project> 
