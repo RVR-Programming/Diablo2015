@@ -99,33 +99,34 @@ public class Teleop implements Tickable {
         rd.tankDrive(leftValue, rightValue);// Sets up tank drive for robot
 
         //Set up all buttons for lifter, grabber, and roller
-        if(dualStick.getBumper(GenericHID.Hand.kLeft) && dualStick.getBumper(GenericHID.Hand.kRight)){
+        if (dualStick.getBumper(GenericHID.Hand.kLeft) && dualStick.getBumper(GenericHID.Hand.kRight)) {
             rd.tankDrive(leftValue / 2, rightValue / 2);//On both bumpers, go half speed
         }
-        
-        //BUTTONS MAY NEED TO BE CHANGED
+
+        //BUTTONS WILL NEED TO BE CHANGED
         boolean grabbing = false;
-        if (joy.getTrigger(GenericHID.Hand.kLeft)){//On joystick trigger
-            if(grabbing){
+        if (joy.getTrigger(GenericHID.Hand.kLeft)) {//On joystick trigger
+            if (grabbing) {
                 grabber.release();//If grabbing, release
-            } else{
+            } else {
                 grabber.grab();//If released, grab
             }
             grabbing = !grabbing;//Change booleean
         }
-        
+
         if (joy.getRawButton(2)) {//Roll in on joy button 12
             roller.in();
         }
         if (joy.getRawButton(11)) {//Roll out on joy button 11
             roller.out();
         }
-        if(joy.getX() < -.5){// May need to change variable
+        if (joy.getX() < -.5) {// May need to change variable
             lifter.up();     // If joy is forward, lift elevator
         }
-        if(joy.getY() > .5)//May need to change variable
+        if (joy.getY() > .5)//May need to change variable
+        {
             lifter.down();// If joy is back, lower elevator
-
+        }
     }
 
     /**
