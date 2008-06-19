@@ -25,7 +25,7 @@
   <property file="build.properties"/>
   <property file="${user.home}/wpilib/java/${version}/ant/build.properties"/>
   
+  <import file="nbproject/build-impl.xml"/>
   <import file="${wpilib.ant.dir}/build.xml"/>
-  <!--<import file="nbproject/build-impl.xml"/>-->
 
 </project> 

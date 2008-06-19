@@ -23,9 +23,19 @@
 package diablo2015;
 
 /**
- *
- * @author user
+ * An interface that defines an object that is able to be periodically invoked.
+ * More precisely, this interface defines an object that has a method, 'tick'.
+ * Such objects are able to be added to the list of Tickable objects in
+ * {@link Robot} so that its tick method will be called periodically.
+ * @author Dylan Frese
  */
 public interface Tickable {
+    /**
+     * 'Ticks' this object. This method must be overrided in classes which
+     * implement this interface to provide some method that would be reasonable
+     * to periodically invoke. This method should not take a large amount of
+     * time, such that it does not delay other tasks, and should not wait for
+     * other tasks to be complete.
+     */
     public void tick();
 }

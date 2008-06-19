@@ -24,22 +24,39 @@ import java.io.File;
 import java.io.IOException;
 /**
  * This is a hack to get the big green button on NetBeans to deploy the project.
+ * <p>
+ * The big green button on the top of NetBeans is typically configured to run a
+ * project. It does this by running a single file it recognizes as the 'main'
+ * class. However, we want that button to deploy the project to the robot. The
+ * deployment of the Robot project is done through an ANT build script, under
+ * the target 'deploy'. NetBeans, sadly, does not allow configuration of that 
+ * button to run an arbitrary build target. To get around that, this file is
+ * designated as the 'main class', and, in a round-about way, runs the ANT build
+ * target 'deploy'.
+ * </p>
  * 
+ * <p>
  * Unfortunately, the build.xml file provided by FIRST is rather rigid, and
  * does not contain any empty targets that may be safely overridden. Thus, there
  * are three solutions:
- * o Modify FIRST's build.xml to ignore this file
+ * </p>
+ * <ul>
+ * <li>Modify FIRST's build.xml to ignore this file
+ *      <p>
  *      This would work, but it would break as soon as that file was overwritten
- *      like in a wpilib update. It also does not port well
- * o Copy the entire 'jar' target, with the one added exclude, to the overriding build
+ *      like in a wpilib update. It also does not port well</p></li>
+ * <li>Copy the entire 'jar' target, with the one added exclude, to the overriding build
  *  file
+ *      <p>
  *      Again, this would work, and it would port a bit better, however, while
  *      it is unlikely that the 'jar' logic would change, this method fails to
- *      compensate for wpilib updates which do change it.
- * o Let the file compile and be deployed to the robot
+ *      compensate for wpilib updates which do change it.</p></li>
+ * <li>Let the file compile and be deployed to the robot
+ *      <p>
  *      This is not the cleanest solution, but it is the simplest and doesn't
  *      really do any harm. This is probably the best solution since it doesn't
- *      add any complexity or modify anything people might forget about.
+ *      add any complexity or modify anything people might forget about.</p></li>
+ * </ul>
  *
  * @author Dylan Frese
  */

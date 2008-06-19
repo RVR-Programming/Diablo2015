@@ -21,33 +21,78 @@
  */
 package diablo2015;
 
-import diablo2015.Roller;
-import diablo2015.Tickable;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
 
 /**
- *
- * @author user
+ * This class handles interaction between the drivers, the controllers, and the
+ * mechanisms on the robot.
+ * 
+ * It is initialized with every mechanism involved in the Teleop period of the 
+ * competition.
+ * @author Erich Maas
  */
 public class Teleop implements Tickable {
 
+    /**
+     * An instance of the DualStickController class representing one of the
+     * controllers.
+     */
     private final DualStickController dualStick;
+    /**
+     * An instance of the Joystick class representing the other controller.
+     */
     private final Joystick joy;
+    //See individual class documentation for more information
+    /**
+     * The drive-train of the robot.
+     */
     RobotDrive rd;
+    /**
+     * The Lifter subassembly of the robot.
+     */
     Lifter lifter;
+    /**
+     * The Grabber subassembly of the robot.
+     */
     Grabber grabber;
+    /**
+     * The Roller subassembly of the robot.
+     */
     Roller roller;
+    
+    private boolean initialized;
 
-    public void init(RobotDrive rd, Lifter lifter, Grabber grabber, Roller roller) {//Initializes necessary things
-        this.rd = rd;
+    /**
+     * Initialize the Teleop instance with the mechanisms on the Robot that
+     * Teleop will control.
+     * @param drive the drive-train of the robot
+     * @param lifter the Lifter subassembly of the robot
+     * @param grabber the Grabber subassembly of the robot
+     * @param roller the Roller subassembly of the robot
+     */
+    public void init(RobotDrive drive, Lifter lifter, Grabber grabber, Roller roller) {//Initializes necessary things
+        initialized = true;
+        this.rd = drive;
         this.lifter = lifter;
         this.grabber = grabber;
         this.roller = roller;
     }
 
-    public void tick() {//THE ROLLERS ARE SPIKES, THE LIFTER IS VICTORS, AND THE TANK DRIVE IS TALONS 
+    /**
+     * Process teleop events. This method reads input from the controllers and
+     * responds by manipulating various mechanisms. This needs to be called
+     * periodically in order to continuously respond to input from the Driver's
+     * Station.
+     */
+    @Override
+    public void tick() {
+        if(!initialized){
+            throw new IllegalStateException("Init method not called! "
+                    + "Please call Teleop.init before using this object.");
+        }
+        
         double leftValue, rightValue;
         leftValue = dualStick.getY(GenericHID.Hand.kLeft);//Gets left stick
         rightValue = dualStick.getY(GenericHID.Hand.kRight);// Gets right stick 
@@ -83,6 +128,11 @@ public class Teleop implements Tickable {
 
     }
 
+    /**
+     * Creates a new Teleop instance attached to the provided controllers.
+     * @param dualStick instance of the dual analog stick controller to use
+     * @param joy instance of the flight stick controller to use
+     */
     public Teleop(DualStickController dualStick, Joystick joy) {//Requires a controller and joystick
         this.dualStick = dualStick;
         this.joy = joy;
