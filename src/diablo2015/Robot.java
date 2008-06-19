@@ -120,9 +120,9 @@ public class Robot extends SampleRobot{
         robotDrive = new RobotDrive(new Talon(9), new Talon(8), new Talon(7), new Talon(6));
         dualstick = new DualStickController(1); //Creates dualstick controller
         joy = new Joystick(2);//Create sjoystick
-        lifter = new Lifter(lift1, lift2, min, max);//Creates lifter with Speed controllers and limit switches
-        grabber = new Grabber(leftFlapSolenoid, rightFlapSolenoid, min);//Creates grabber with solenoids
-        roller = new Roller(leftRoll, rightRoll);//Creates roller with speed controllers
+        //lifter = new Lifter(lift1, lift2, min, max);//Creates lifter with Speed controllers and limit switches
+        //grabber = new Grabber(leftFlapSolenoid, rightFlapSolenoid, min);//Creates grabber with solenoids
+        //roller = new Roller(leftRoll, rightRoll);//Creates roller with speed controllers
         
         Teleop teleop = new Teleop(dualstick, joy); //Creates teleop with two controllers
         teleop.init(robotDrive, lifter, grabber, roller);//Initializes teleop
