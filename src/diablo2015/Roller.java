@@ -25,15 +25,21 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Relay;
 
 /**
- *Controls the rollers that pull the totes in
- * 
+ * Controls the rollers that pull the totes in
+ *
  * @author Erich Maas
  */
 public class Roller implements Tickable {
+
+    /**
+     * Time that the roller will spin for. Set to 3 seconds.
+     */
+    private final int ROLLER_TIME = (int) (3000 / Robot.TICK_PERIOD);
+
     /**
      * Counter for the tick method.
      */
-    private int tickCount = 0;
+    private int tickCount;
     /**
      * Left Spike for the roller.
      */
@@ -45,54 +51,89 @@ public class Roller implements Tickable {
     /**
      * Limit switch that checks if tote is in robot
      */
-    private final DigitalInput toteSwitch;
+    private final DigitalInput leftStat;
+    private final DigitalInput rightStat;
     /**
-     * Sets if the rollers will go in, out, or be stopped 
+     * Sets if the rollers will go in, out, or be stopped
      */
-    private int speed = 0;
-/**
- * Constructs the roller object
- * @param left Spike for the left motor
- * @param right Spike for the right motor
- */  
-    public Roller(Relay left, Relay right, DigitalInput toteSwitch) {
+    private int leftSpeed = 0;
+    private int rightSpeed = 0;
+
+    /**
+     * Constructs the roller object
+     *
+     * @param left Spike for the left motor
+     * @param right Spike for the right motor
+     * @param leftStat Limit switch that checks if a tote is in the robot
+     * @param rightStat Limit switch that checks if tote is in the robot
+     */
+    public Roller(Relay left, Relay right, DigitalInput leftStat, DigitalInput rightStat) {
         this.left = left;
         this.right = right;
-        this.toteSwitch = toteSwitch;
-    }
-/**
- * Both Rollers are set to pull in at max speed.
- * Motors spin in opposite directions
- */
-    public void in() { //Both rollers go in max speed
-        speed = 1;
-    }
-/**
- * Both Rollers are set to push out at maximum speed.
- * Motors spin in opposite directions.
- */
-    public void out() {//Both rollers go out max speed
-        speed = -1;
-    }
-/**
- * Controls direction of the rollers and time the rollers are activated.
- */
-    public void tick() {
-        
-        if(speed < 0 && !toteSwitch.get() && tickCount < 31){
-            left.set(Relay.Value.kOn);
-            right.set(Relay.Value.kReverse);
-            tickCount++;
-        }
-        if(speed > 0){
-            left.set(Relay.Value.kReverse);
-            right.set(Relay.Value.kOn);
-        }
-        else{
-            speed = 0;
-            left.set(Relay.Value.kOff);
-            right.set(Relay.Value.kOff);
-        }
+        this.leftStat = leftStat;
+        this.rightStat = rightStat;
     }
 
+    /**
+     * Both Rollers are set to pull in at max speed for 3 seconds. Motors spin 
+     * in opposite directions.
+     */
+    public void in() { //Both rollers go in max speed
+        leftSpeed = 1;
+        rightSpeed = 1;
+        tickCount = 0;
+    }
+
+    /**
+     * Both Rollers are set to push out at max speed for 3 seconds. Motors spin 
+     * in opposite directions.
+     */
+    public void out() {//Both rollers go out max speed
+        leftSpeed = -1;
+        rightSpeed = -1;
+        tickCount = 0;
+    }
+
+    /**
+     * Controls direction of the rollers and time the rollers are activated.
+     */
+    @Override
+    public void tick() {
+        if (leftSpeed < 0) {
+            left.set(Relay.Value.kReverse);
+        } else if (leftSpeed > 0 && leftStat.get()) {
+            left.set(Relay.Value.kForward);
+        } else {
+            left.set(Relay.Value.kOff);
+        }
+
+        if (rightSpeed < 0) {
+            right.set(Relay.Value.kForward);
+        } else if (rightSpeed > 0 && rightStat.get()) {
+            right.set(Relay.Value.kReverse);
+        } else {
+            right.set(Relay.Value.kOff);
+        }
+
+        if (leftSpeed != 0 || rightSpeed != 0) {
+            tickCount++;
+            if (tickCount > ROLLER_TIME) {//Turns Rollers off when tickCOunt goes above limit
+                leftSpeed = 0;
+                rightSpeed = 0;
+                tickCount = 0;
+                left.set(Relay.Value.kOff);
+                right.set(Relay.Value.kOff);
+            }
+        }
+    }
+    @Override
+    public String toString(){
+        if(leftSpeed < 0){
+            return "OUT";
+        } else if(leftSpeed > 0){
+            return "IN";
+        } else{
+            return "OFF";
+        }
+    }
 }

@@ -36,7 +36,8 @@ public class Lifter implements Tickable {
     /**
      * Speed that the elevator will be moving at
      */
-    private double speed = 0;
+    private double leftSpeed = 0;
+    private double rightSpeed = 0;
     /**
      * Speed controller for left motor of elevator.
      */
@@ -64,11 +65,13 @@ public class Lifter implements Tickable {
     /**
      * Says if elevator is fully lowered
      */
-    private boolean lowered;
+    private boolean loweredLeft;
     /**
      * Says if elevator is fully raised
      */
-    private boolean raised;
+    private boolean raisedLeft;
+    private boolean loweredRight;
+    private boolean raisedRight;
 
     /**
      *
@@ -92,7 +95,8 @@ public class Lifter implements Tickable {
      * Lowers the elevator if it is not already at bottom.
      */
     public void down() {
-        speed = -1;
+        leftSpeed = 1;
+        rightSpeed = 1;
     }
 
     /**
@@ -100,22 +104,51 @@ public class Lifter implements Tickable {
      */
     public void up() {
 
-        speed = 1;
+        leftSpeed = -1;
+        rightSpeed = -1;
+    }
+
+    public void stop() {
+        leftSpeed = 0;
+        rightSpeed = 0;
     }
 
     /**
      * Checks if elevator is fully raised or lowered. If it is, stop the motors.
      */
     public void tick() {
-        lowered = leftMin.get() && rightMin.get();
-        raised = leftMax.get() && rightMax.get();
-        if (lowered && speed < 0) {
-            speed = 0;
+        loweredLeft = !leftMin.get();
+        loweredRight = !rightMin.get();
+        raisedLeft = !leftMax.get();
+        raisedRight = !rightMax.get();
+
+        if (loweredLeft && leftSpeed < 0) {
+            leftSpeed = 0;
         }
-        if (raised && speed > 0) {
-            speed = 0;
+        if (loweredRight && rightSpeed < 0) {
+            rightSpeed = 0;
         }
-        left.set(speed);
-        right.set(speed);
+        if (raisedLeft && leftSpeed > 0) {
+            leftSpeed = 0;
+        }
+        if (raisedRight && rightSpeed > 0) {
+            rightSpeed = 0;
+        }
+        left.set(leftSpeed);
+        right.set(rightSpeed);
+    }
+
+    public String toString() {
+        if (!leftMax.get() && !rightMax.get()) {
+            return "FULLY RAISED";
+        } else if (!leftMin.get() && !rightMin.get()) {
+            return "FULLY LOWERED";
+        } else if (leftSpeed > 0) {
+            return "DOWN";
+        } else if (leftSpeed < 0) {
+            return "UP";
+        } else {
+            return "STOPPED";
+        }
     }
 }

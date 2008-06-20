@@ -28,9 +28,10 @@ import edu.wpi.first.wpilibj.RobotDrive;
 /**
  * This class handles interaction between the drivers, the controllers, and the
  * mechanisms on the robot.
- * 
- * It is initialized with every mechanism involved in the Teleop period of the 
+ *
+ * It is initialized with every mechanism involved in the Teleop period of the
  * competition.
+ *
  * @author Erich Maas
  */
 public class Teleop implements Tickable {
@@ -61,12 +62,17 @@ public class Teleop implements Tickable {
      * The Roller subassembly of the robot.
      */
     Roller roller;
-    
+    /**
+     * A boolean to tell if the grabber is grabbing
+     */
+    boolean grabbing = false;
+
     private boolean initialized;
 
     /**
      * Initialize the Teleop instance with the mechanisms on the Robot that
      * Teleop will control.
+     *
      * @param drive the drive-train of the robot
      * @param lifter the Lifter subassembly of the robot
      * @param grabber the Grabber subassembly of the robot
@@ -88,49 +94,46 @@ public class Teleop implements Tickable {
      */
     @Override
     public void tick() {
-        if(!initialized){
+        if (!initialized) {
             throw new IllegalStateException("Init method not called! "
                     + "Please call Teleop.init before using this object.");
         }
-        
+
         double leftValue, rightValue;
-        leftValue = dualStick.getY(GenericHID.Hand.kLeft);//Gets left stick
-        rightValue = dualStick.getY(GenericHID.Hand.kRight);// Gets right stick 
+        leftValue = (dualStick.getY(GenericHID.Hand.kLeft) * -1);//Gets left stick
+        rightValue = (dualStick.getY(GenericHID.Hand.kRight) * -1);// Gets right stick 
         rd.tankDrive(leftValue, rightValue);// Sets up tank drive for robot
 
         //Set up all buttons for lifter, grabber, and roller
         if (dualStick.getBumper(GenericHID.Hand.kLeft) && dualStick.getBumper(GenericHID.Hand.kRight)) {
-            rd.tankDrive(leftValue / 2, rightValue / 2);//On both bumpers, go half speed
+            rd.tankDrive(leftValue * .5, rightValue * .5);//On both bumpers, go half speed
         }
 
         //BUTTONS WILL NEED TO BE CHANGED
-        boolean grabbing = false;
-        if (joy.getTrigger(GenericHID.Hand.kLeft)) {//On joystick trigger
-            if (grabbing) {
-                grabber.release();//If grabbing, release
-            } else {
-                grabber.grab();//If released, grab
-            }
-            grabbing = !grabbing;//Change booleean
+        if (joy.getRawButton(1)) {//On joystick trigger
+            grabber.release();
+        } else if (!joy.getRawButton(1)) {
+            grabber.grab();
         }
 
-        if (joy.getRawButton(2)) {//Roll in on joy button 12
+        if (joy.getRawButton(3)) {//Roll in on joy button 3
             roller.in();
-        }
-        if (joy.getRawButton(11)) {//Roll out on joy button 11
+        } else if (joy.getRawButton(4)) {//Roll out on joy button 4
             roller.out();
         }
-        if (joy.getX() < -.5) {// May need to change variable
-            lifter.up();     // If joy is forward, lift elevator
-        }
-        if (joy.getY() > .5)//May need to change variable
+        if (joy.getY() < -.5) {// May need to change variable
+            lifter.down();     // If joy is forward, lift elevator
+        } else if (joy.getY() > .5)//May need to change variable
         {
-            lifter.down();// If joy is back, lower elevator
+            lifter.up();// If joy is back, lower elevator
+        } else {
+            lifter.stop();
         }
     }
 
     /**
      * Creates a new Teleop instance attached to the provided controllers.
+     *
      * @param dualStick instance of the dual analog stick controller to use
      * @param joy instance of the flight stick controller to use
      */
