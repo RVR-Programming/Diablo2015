@@ -21,7 +21,6 @@
 
 	<!-- Any other property in build.properties can also be overridden. -->
 
-	<property file="project.properties"/>
 	<property file="${user.home}/wpilib/wpilib.properties"/>
 	<property file="${user.home}/wpilib/java/${version}/ant/build.properties"/>
 	<property name="robot.class" value="diablo2015.Robot" />
@@ -29,6 +28,8 @@
 
 	<!--<import file="nbproject/build-impl.xml"/> -->
 	<import file="${wpilib.ant.dir}/build.xml"/>
+
+	<target name="run" depends="deploy" />
 
 	<!-- Javadoc section, imported from NetBean's build-impl.xml -->
 	<target name="-javadoc-build">
@@ -44,11 +45,11 @@
 		<condition else="" property="bug5101868workaround" value="*.java">
 		    <matches pattern="1\.[56](\..*)?" string="${java.version}"/>
 		</condition>
-		<javadoc additionalparam="-J-Dfile.encoding=${file.encoding} ${javadoc.additionalparam}" author="${javadoc.author}" charset="UTF-8" destdir="${dist.javadoc.dir}" docencoding="UTF-8" encoding="UTF-8" failonerror="true" noindex="${javadoc.noindex}" nonavbar="${javadoc.nonavbar}" notree="${javadoc.notree}" private="${javadoc.private}" source="${javac.source}" splitindex="${javadoc.splitindex}" use="${javadoc.use}" useexternalfile="true" version="${javadoc.version}" windowtitle="${javadoc.windowtitle}">
+		<javadoc additionalparam="-J-Dfile.encoding=UTF-8 ${javadoc.additionalparam}" author="${javadoc.author}" charset="UTF-8" destdir="${dist.javadoc.dir}" docencoding="UTF-8" encoding="UTF-8" failonerror="true" noindex="${javadoc.noindex}" nonavbar="${javadoc.nonavbar}" notree="${javadoc.notree}" private="${javadoc.private}" source="${javac.source}" splitindex="${javadoc.splitindex}" use="${javadoc.use}" useexternalfile="true" version="${javadoc.version}" windowtitle="${javadoc.windowtitle}">
 		    <classpath>
 			<path path="${classpath}"/>
 		    </classpath>
-		    <fileset dir="${src.dir}" excludes="${bug5101868workaround},${excludes}" includes="${includes}">
+		    <fileset dir="src">
 			<filename name="**/*.java"/>
 		    </fileset>
 		    <fileset dir="${build.generated.sources.dir}" erroronmissingdir="false">
