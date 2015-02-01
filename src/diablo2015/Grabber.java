@@ -1,3 +1,5 @@
+package diablo2015;
+
 
 import edu.wpi.first.wpilibj.Solenoid;
 

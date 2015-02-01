@@ -1,3 +1,5 @@
+package diablo2015;
+
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -81,5 +83,11 @@ public class DualStickController extends GenericHID {
         return ((ds.getStickButtons(port) >> (button - 1)) & 1) == 1;//BOOM, MAGIC
     }
 
+    @Override
+    public int getPOV(int pov) {
+        return 0;
+    }
+
+    
 
 }

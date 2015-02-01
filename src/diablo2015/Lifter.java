@@ -1,3 +1,5 @@
+package diablo2015;
+
 
 import diablo2015.Tickable;
 import edu.wpi.first.wpilibj.DigitalInput;
