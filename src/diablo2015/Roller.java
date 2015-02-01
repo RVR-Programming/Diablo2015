@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.Talon;
  *
  * @author user
  */
-public class Roller {
+public class Roller implements  Tickable{
     private final Talon left, right;
     private int rollerSpeed;
     public Roller(Talon left, Talon right, int rollerSpeed){
@@ -31,6 +31,8 @@ public class Roller {
         left.set(-rollerSpeed);
         right.set(rollerSpeed);
     }
-    
+    public void tick(){
+        
+    }
    
 }

@@ -14,7 +14,7 @@ public class Grabber {
 
     private final Solenoid left1, left2, right1, right2;
 
-    public Grabber(Solenoid left1, Solenoid left2, Solenoid right1, Solenoid right2) {
+    public Grabber(Solenoid left1, Solenoid left2, Solenoid right1, Solenoid right2) {//Initializes all pistons
         this.left1 = left1;
         this.left2 = left2;
         this.right1 = right1;

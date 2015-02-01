@@ -1,4 +1,5 @@
 
+import diablo2015.Tickable;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
@@ -12,7 +13,7 @@ import edu.wpi.first.wpilibj.Talon;
  *
  * @author user
  */
-public class Lifter {
+public class Lifter implements Tickable{
     private final int speed = 1;
     private final DigitalInput switchBot, switchMid, switchTop;
     private final Talon lift1, lift2;
@@ -53,6 +54,9 @@ public class Lifter {
             lift1.set(0);
             lift2.set(0);
         }
+    }
+    public void tick(){
+        
     }
 
 }
