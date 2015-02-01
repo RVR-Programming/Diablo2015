@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.Solenoid;
  *
  * @author user
  */
-public class Grabber {
+public class Grabber implements Tickable{
 
     private final Solenoid left1, left2, right1, right2;
 
@@ -35,6 +35,9 @@ public class Grabber {
         left2.set(false);
         right1.set(false);
         right2.set(false);
+    }
+    public void tick(){
+        
     }
 
 }

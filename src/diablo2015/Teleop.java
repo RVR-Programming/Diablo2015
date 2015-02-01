@@ -24,7 +24,7 @@ public class Teleop implements Tickable {
     Grabber grabber;
     Roller roller;
 
-    public void inti(RobotDrive rd, Lifter lifter, Grabber grabber, Roller roller) {//Initializes various things
+        public void init(RobotDrive rd, Lifter lifter, Grabber grabber, Roller roller) {//Initializes necessary things
         this.rd = rd;
         this.lifter = lifter;
         this.grabber = grabber;
@@ -39,9 +39,13 @@ public class Teleop implements Tickable {
         
         //Set up all buttons for lifter, grabber, and roller
     }
-    public Teleop(DualStickController dualStick, Joystick joy){
+    public Teleop(DualStickController dualStick, Joystick joy){//Requires a controller and joystick
         this.dualStick = dualStick;
         this.joy = joy;
+    }
+
+    void init(RobotDrive robotDrive, Lifter lifter, Grabber grabber, Roller roller) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
