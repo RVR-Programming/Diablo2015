@@ -30,7 +30,7 @@ public class Robot {
     Grabber grabber;
     Talon lift1, lift2;
 
-    public void robotMain() {
+    public void RobotMain() {
         robotDrive = new RobotDrive(new Talon(99), new Talon(99)); //Creates robot drive
         dualstick = new DualStickController(99); //Creates dualstick controller
         joy = new Joystick(99);//Create sjoystick

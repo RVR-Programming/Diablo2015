@@ -19,6 +19,10 @@ public class Roller implements  Tickable{
         this.right = right;
         this.rollerSpeed = rollerSpeed;
     }
+    public Roller(Talon left, Talon right){
+        this.left = left;
+        this.right = right;
+    }
     public void in(){ //Both rollers go in max speed
         left.set(1);
         right.set(-1);
