@@ -1,6 +1,5 @@
 package diablo2015;
 
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 
@@ -61,33 +60,30 @@ public class DualStickController extends GenericHID {
             return getTrigger(Hand.kRight);
         }
     }
-    
+
     public boolean getTop(Hand hand) {//Returns pushing in analog sticks
-         if(hand == Hand.kLeft){//Checks left or right
+        if (hand == Hand.kLeft) {//Checks left or right
             return getRawButton(11);
-        }
-        else{
+        } else {
             return getRawButton(12);
         }
     }
 
     public boolean getBumper(Hand hand) {//Returns bumper
-         if(hand == Hand.kLeft){//Checks left or right
+        if (hand == Hand.kLeft) {//Checks left or right
             return getBumper(Hand.kLeft);
-        }
-        else{
+        } else {
             return getBumper(Hand.kRight);
         }
     }
+
     public boolean getRawButton(int button) {// Returns the rest of the buttons
         return ((ds.getStickButtons(port) >> (button - 1)) & 1) == 1;//BOOM, MAGIC
-    }
+    }//Shifts binary number over "button" digits to see if a button is used or not
 
     @Override
-    public int getPOV(int pov) {
+    public int getPOV(int pov) {// Not sure what this is for, returning zero
         return 0;
     }
-
-    
 
 }
