@@ -1,11 +1,5 @@
-
-import java.io.File;
-import java.io.IOException;
-
 /*
  * The MIT License
- *
- * Copyright 2015 user.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +19,9 @@ import java.io.IOException;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
+import java.io.File;
+import java.io.IOException;
 /**
  * This is a hack to get the big green button on NetBeans to deploy the project.
  * 
