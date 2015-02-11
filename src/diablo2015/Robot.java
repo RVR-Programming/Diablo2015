@@ -58,7 +58,7 @@ public class Robot {
         Teleop teleop = new Teleop(dualstick, joy); //Creates teleop with two controllers
         teleop.init(robotDrive, lifter, grabber, roller);//Initializes teleop
         add(teleop);
-        lifter = new Lifter(lift1, lift2);//Creates lifter with Speed controllers and limit switches
+        lifter = new Lifter(lift1, lift2, min, max);//Creates lifter with Speed controllers and limit switches
         add(lifter);
         grabber = new Grabber(left, right, min);//Creates grabber with solenoids
         add(grabber);
