@@ -19,36 +19,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
- 
 package diablo2015;
 
-
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Solenoid;
- 
+
 /**
  *
  * @author user
  */
-public class Grabber implements Tickable{
+public class Grabber implements Tickable {
 
     private final Solenoid left, right;
+    private final DigitalInput min;
 
-    public Grabber(Solenoid left, Solenoid right) {//Initializes all pistons
+    public Grabber(Solenoid left, Solenoid right, DigitalInput min) {//Initializes all pistons
         this.left = left;
         this.right = right;
+        this.min = min;
+
     }
 
     public void grab() { //Extends all pistons to grab crate
-        left.set(true);
-        right.set(true);
+        if (min.get()) { // Only works when lifter fully lowered
+            left.set(true);
+            right.set(true);
+        }
     }
 
     public void release() {//Retracts all pistons to release crate
-        left.set(false);
-        right.set(false);      
+        if (min.get()) {   // Only works when fully lowered
+            left.set(false);
+            right.set(false);
+        }
     }
-    public void tick(){
-        
+
+    public void tick() {
+
     }
 
 }

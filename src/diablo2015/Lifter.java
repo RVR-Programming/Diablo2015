@@ -34,20 +34,27 @@ public class Lifter implements Tickable {
 
     private final int speed = 1;
     private final Talon lift1, lift2;
+    private final DigitalInput min, max;
 
-    public Lifter(Talon lift1, Talon lift2) {
+    public Lifter(Talon lift1, Talon lift2, DigitalInput min, DigitalInput max) {
         this.lift1 = lift1;
         this.lift2 = lift2;
+        this.min = min;
+        this.max = max;
     }
 
     public void down() {// Goes down
-        lift1.set(speed);
-        lift2.set(-speed);
+        if (!min.get()) {// Onmly goes down if not at bottom
+            lift1.set(speed);
+            lift2.set(-speed);
+        }
     }
 
     public void up() {// Goes up
-        lift1.set(-speed);
-        lift2.set(speed);
+        if (!min.get()) {//only goes up if not at top
+            lift1.set(-speed);
+            lift2.set(speed);
+        }
     }
 
     public void tick() {

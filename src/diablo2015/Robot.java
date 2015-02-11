@@ -35,7 +35,7 @@ import java.util.Enumeration;
  * @author user
  */
 public class Robot {
-    DigitalInput limitSwitchTop, limitSwitchMid, limitSwitchBot;
+    DigitalInput min, max;
     RobotDrive robotDrive;
     DualStickController dualstick;
     Solenoid left, right;
@@ -60,7 +60,7 @@ public class Robot {
         add(teleop);
         lifter = new Lifter(lift1, lift2);//Creates lifter with Speed controllers and limit switches
         add(lifter);
-        grabber = new Grabber(left, right);//Creates grabber with solenoids
+        grabber = new Grabber(left, right, min);//Creates grabber with solenoids
         add(grabber);
         roller = new Roller(lift1, lift1);//Creates roller with speed controllers
         add(roller);
