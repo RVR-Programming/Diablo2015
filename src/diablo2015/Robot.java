@@ -35,30 +35,34 @@ import java.util.Enumeration;
  * @author user
  */
 public class Robot {
-
     DigitalInput limitSwitchTop, limitSwitchMid, limitSwitchBot;
     RobotDrive robotDrive;
     DualStickController dualstick;
-    Solenoid left1, left2, right1, right2;
+    Solenoid left, right;
     Joystick joy;
     Hashtable tickables = new Hashtable();
     Roller roller;
     Lifter lifter;
     Grabber grabber;
-    Talon lift1, lift2;
+    Talon lift1, lift2; 
 
     public void RobotMain() {
+        
+        ///////////////////////////////////
+        // ALL PORTS NEED TO BE ASSIGNED //
+        ///////////////////////////////////
+        
         robotDrive = new RobotDrive(new Talon(99), new Talon(99)); //Creates robot drive
         dualstick = new DualStickController(99); //Creates dualstick controller
         joy = new Joystick(99);//Create sjoystick
         Teleop teleop = new Teleop(dualstick, joy); //Creates teleop with two controllers
         teleop.init(robotDrive, lifter, grabber, roller);//Initializes teleop
         add(teleop);
-        lifter = new Lifter(lift1, lift2, limitSwitchBot, limitSwitchMid, limitSwitchTop);//Creates lifter with Speed controllers and limit switches
+        lifter = new Lifter(lift1, lift2);//Creates lifter with Speed controllers and limit switches
         add(lifter);
-        grabber = new Grabber(left1, left2, right1, right2);//Creates grabber with solenoids
+        grabber = new Grabber(left, right);//Creates grabber with solenoids
         add(grabber);
-        roller = new Roller(lift1, lift1, 1);//Creates roller with speed controllers
+        roller = new Roller(lift1, lift1);//Creates roller with speed controllers
         add(roller);
 
         while (true) {

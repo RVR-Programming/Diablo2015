@@ -67,15 +67,13 @@ public class Teleop implements Tickable {
         if(dualStick.getBumper(GenericHID.Hand.kRight)){//TO BE CHANGED   roll out on right bumper
             roller.out();
         }
-        if(joy.getRawButton(99)){//TO BE CHANGED   on button, lifter moves to bottom
-            lifter.bottom();
+        if(joy.getRawButton(99)){//TO BE CHANGED   on button, lifter goes down
+            lifter.down();
         }
-        if(joy.getRawButton(99)){//TO BE CHANGED   on button, lifter moves to middle
-            lifter.middle();
+        if(joy.getRawButton(99)){//TO BE CHANGED   on button, lifter goes up
+            lifter.up();
         }
-        if(joy.getRawButton(99)){//TO BE CHANGED   on button, lifter moves to top
-            lifter.top();
-        }
+        
     }
 
     public Teleop(DualStickController dualStick, Joystick joy) {//Requires a controller and joystick
