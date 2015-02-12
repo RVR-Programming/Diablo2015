@@ -19,39 +19,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 package diablo2015;
 
-import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
-import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Iterator;
 
 /**
  *
  * @author user
  */
 public class Robot {
+
     DigitalInput min, max;
     RobotDrive robotDrive;
     DualStickController dualstick;
     Solenoid left, right;
     Joystick joy;
-    Hashtable tickables = new Hashtable();
+    HashSet<Tickable> tickables = new HashSet<>();
     Roller roller;
     Lifter lifter;
     Grabber grabber;
-    Talon lift1, lift2; 
+    Talon lift1, lift2;
 
     public void RobotMain() {
-        
+
+        //TODO:
         ///////////////////////////////////
         // ALL PORTS NEED TO BE ASSIGNED //
         ///////////////////////////////////
-        
         robotDrive = new RobotDrive(new Talon(99), new Talon(99)); //Creates robot drive
         dualstick = new DualStickController(99); //Creates dualstick controller
         joy = new Joystick(99);//Create sjoystick
@@ -66,9 +66,10 @@ public class Robot {
         add(roller);
 
         while (true) {
-            Enumeration e = tickables.elements();
-            while (e.hasMoreElements()) {
-                Tickable t = (Tickable) e.nextElement();//Ticks all tickable things
+            Iterator<Tickable> it = tickables.iterator();
+            while (it.hasNext()) {
+                Tickable t = it.next();//Ticks all tickable things
+                t.tick();
             }
             try {
                 Thread.sleep(50);//Waits 50 milisecs
@@ -96,14 +97,21 @@ public class Robot {
      * This function is called once each time the robot enters test mode.
      */
     public void test() {
-
+        DualStickController dualStick = new DualStickController(0);
+        while (true) {
+            for (int i = 0; i < 8; i++) {
+                if (dualStick.getRawButton(i)) {
+                    System.out.println(i);
+                }
+            }
+        }
     }
 
     public void add(Tickable obj) {//Adds an object to a list of tickables
-        tickables.put(new Integer(obj.hashCode()), obj);
+        tickables.add(obj);
     }
 
     public void remove(Tickable obj) {//Removes object from list
-        tickables.remove(new Integer(obj.hashCode()));
+        tickables.remove(obj);
     }
 }
