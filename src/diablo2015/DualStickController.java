@@ -95,8 +95,8 @@ public class DualStickController extends GenericHID {
     }
 
     public boolean getRawButton(int button) {// Returns the rest of the buttons
-        return ((ds.getStickButtons(port) >> (button - 1)) & 1) == 1;//BOOM, MAGIC
-    }//Shifts binary number over "button" digits to see if a button is used or not
+        return ds.getStickButton(port, (byte) button); //New method from FIRST
+    }
 
     @Override
     public int getPOV(int pov) {// Not sure what this is for, returning zero
