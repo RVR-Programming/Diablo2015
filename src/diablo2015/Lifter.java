@@ -24,7 +24,7 @@ package diablo2015;
 import diablo2015.Tickable;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.Victor;
 
 /**
  *
@@ -33,10 +33,10 @@ import edu.wpi.first.wpilibj.Talon;
 public class Lifter implements Tickable {
 
     private final int speed = 1;
-    private final Talon lift1, lift2;
+    private final Victor lift1, lift2;
     private final DigitalInput min, max;
 
-    public Lifter(Talon lift1, Talon lift2, DigitalInput min, DigitalInput max) {
+    public Lifter(Victor lift1, Victor lift2, DigitalInput min, DigitalInput max) {
         this.lift1 = lift1;
         this.lift2 = lift2;
         this.min = min;

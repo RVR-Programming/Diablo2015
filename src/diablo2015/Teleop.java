@@ -48,7 +48,7 @@ public class Teleop implements Tickable {
         this.roller = roller;
     }
 
-    public void tick() {
+    public void tick() {//THE ROLLERS ARE SPIKES, THE LIFTER IS VICTORS, AND THE TANK DRIVE IS TALONS 
         double leftValue, rightValue;
         leftValue = dualStick.getY(GenericHID.Hand.kLeft);//Gets left stick
         rightValue = dualStick.getY(GenericHID.Hand.kRight);// Gets right stick 

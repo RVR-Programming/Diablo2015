@@ -23,9 +23,11 @@ package diablo2015;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.Victor;
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -44,8 +46,8 @@ public class Robot {
     Roller roller;
     Lifter lifter;
     Grabber grabber;
-    Talon lift1, lift2;
-
+    Victor lift1, lift2;
+    Relay leftRoll, rightRoll;
     public void RobotMain() {
 
         //TODO:
@@ -62,7 +64,7 @@ public class Robot {
         add(lifter);
         grabber = new Grabber(left, right, min);//Creates grabber with solenoids
         add(grabber);
-        roller = new Roller(lift1, lift1);//Creates roller with speed controllers
+        roller = new Roller(leftRoll, rightRoll);//Creates roller with speed controllers
         add(roller);
 
         while (true) {

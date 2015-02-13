@@ -21,6 +21,7 @@
  */
 package diablo2015;
 
+import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Talon;
 
 /**
@@ -29,22 +30,22 @@ import edu.wpi.first.wpilibj.Talon;
  */
 public class Roller implements Tickable {
 
-    private final Talon left, right;
+    private final Relay left, right; 
     private int rollerSpeed;
 
-    public Roller(Talon left, Talon right) {
+    public Roller(Relay left, Relay right) {
         this.left = left;
         this.right = right;
     }
 
     public void in() { //Both rollers go in max speed
-        left.set(1);
-        right.set(1);
+        left.set(Relay.Value.kOn);
+        right.set(Relay.Value.kOn);
     }
 
     public void out() {//Both rollers go out max speed
-        left.set(-1);
-        right.set(-1);
+        left.set(Relay.Value.kOff);
+        right.set(Relay.Value.kOff);
     }
 
     public void tick() {
