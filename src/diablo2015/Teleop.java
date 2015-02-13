@@ -19,7 +19,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 package diablo2015;
 
 import diablo2015.Roller;
@@ -55,25 +54,33 @@ public class Teleop implements Tickable {
         rd.tankDrive(leftValue, rightValue);// Sets up tank drive for robot
 
         //Set up all buttons for lifter, grabber, and roller
-        if(dualStick.getRawButton(99)){//TO BE CHANGED   grab on button push
-            grabber.grab();
-        }
-        if(dualStick.getRawButton(99)){//TO BE CHANGED   release on button push
-            grabber.release();
-        }
-        if(dualStick.getBumper(GenericHID.Hand.kLeft)){//TO BE CHANGED   roll in on left bumper
-            roller.in();
-        } 
-        if(dualStick.getBumper(GenericHID.Hand.kRight)){//TO BE CHANGED   roll out on right bumper
-            roller.out();
-        }
-        if(joy.getRawButton(99)){//TO BE CHANGED   on button, lifter goes down
-            lifter.down();
-        }
-        if(joy.getRawButton(99)){//TO BE CHANGED   on button, lifter goes up
-            lifter.up();
+        if(dualStick.getBumper(GenericHID.Hand.kLeft) && dualStick.getBumper(GenericHID.Hand.kRight)){
+            rd.tankDrive(leftValue / 2, rightValue / 2);//On both bumpers, go half speed
         }
         
+        //BUTTONS MAY NEED TO BE CHANGED
+        boolean grabbing = false;
+        if (joy.getTrigger(GenericHID.Hand.kLeft)){//On joystick trigger
+            if(grabbing){
+                grabber.release();//If grabbing, release
+            } else{
+                grabber.grab();//If released, grab
+            }
+            grabbing = !grabbing;//Change booleean
+        }
+        
+        if (joy.getRawButton(2)) {//Roll in on joy button 12
+            roller.in();
+        }
+        if (joy.getRawButton(11)) {//Roll out on joy button 11
+            roller.out();
+        }
+        if(joy.getX() < -.5){// May need to change variable
+            lifter.up();     // If joy is forward, lift elevator
+        }
+        if(joy.getY() > .5)//May need to change variable
+            lifter.down();// If joy is back, lower elevator
+
     }
 
     public Teleop(DualStickController dualStick, Joystick joy) {//Requires a controller and joystick
