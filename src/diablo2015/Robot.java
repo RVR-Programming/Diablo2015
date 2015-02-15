@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.RobotDrive;
+import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Victor;
@@ -35,37 +36,40 @@ import java.util.Iterator;
  *
  * @author user
  */
-public class Robot {
+public class Robot extends SampleRobot{
 
-    DigitalInput min, max;
+    DigitalInput min = new DigitalInput(99), max = new DigitalInput(99);//Sets up spikes
     RobotDrive robotDrive;
     DualStickController dualstick;
-    Solenoid left, right;
+    Solenoid left = new Solenoid(99), right = new Solenoid(99);// Sets up solenoids
     Joystick joy;
     HashSet<Tickable> tickables = new HashSet<>();
     Roller roller;
     Lifter lifter;
     Grabber grabber;
-    Victor lift1, lift2;
-    Relay leftRoll, rightRoll;
-    public void RobotMain() {
+    Victor lift1 = new Victor(2), lift2 = new Victor(3);// Sets up victors in ports 3 and 4
+    Relay leftRoll = new Relay(4), rightRoll = new Relay(5);// Sets up 
+
+    @Override
+    public void robotMain() {
 
         //TODO:
         ///////////////////////////////////
         // ALL PORTS NEED TO BE ASSIGNED //
         ///////////////////////////////////
-        robotDrive = new RobotDrive(new Talon(99), new Talon(99)); //Creates robot drive
-        dualstick = new DualStickController(99); //Creates dualstick controller
-        joy = new Joystick(99);//Create sjoystick
-        Teleop teleop = new Teleop(dualstick, joy); //Creates teleop with two controllers
-        teleop.init(robotDrive, lifter, grabber, roller);//Initializes teleop
-        add(teleop);
+        robotDrive = new RobotDrive(new Talon(9), new Talon(8), new Talon(7), new Talon(6));
+        //robotDrive = new RobotDrive(new Talon(99), new Talon(99)); //Creates robot drive
+        dualstick = new DualStickController(1); //Creates dualstick controller
+        joy = new Joystick(2);//Create sjoystick
         lifter = new Lifter(lift1, lift2, min, max);//Creates lifter with Speed controllers and limit switches
         add(lifter);
         grabber = new Grabber(left, right, min);//Creates grabber with solenoids
         add(grabber);
         roller = new Roller(leftRoll, rightRoll);//Creates roller with speed controllers
         add(roller);
+        Teleop teleop = new Teleop(dualstick, joy); //Creates teleop with two controllers
+        teleop.init(robotDrive, lifter, grabber, roller);//Initializes teleop
+        add(teleop);
 
         while (true) {
             Iterator<Tickable> it = tickables.iterator();
@@ -79,34 +83,6 @@ public class Robot {
             }
         }
 
-    }
-
-    /**
-     * This function is called once each time the robot enters autonomous mode.
-     */
-    public void autonomous() {
-
-    }
-
-    /**
-     * This function is called once each time the robot enters operator control.
-     */
-    public void operatorControl() {
-
-    }
-
-    /**
-     * This function is called once each time the robot enters test mode.
-     */
-    public void test() {
-        DualStickController dualStick = new DualStickController(0);
-        while (true) {
-            for (int i = 0; i < 8; i++) {
-                if (dualStick.getRawButton(i)) {
-                    System.out.println(i);
-                }
-            }
-        }
     }
 
     public void add(Tickable obj) {//Adds an object to a list of tickables
