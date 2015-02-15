@@ -34,29 +34,27 @@ import java.util.Iterator;
 
 /**
  * Our 2015 Recycle Rush Robot.
- * 
+ *
  * This class represents our Robot and all of the physical mechanisms that go on
  * it. This class extends SampleRobot, provided by FIRST. There should
  * reasonably only be one instance of this class per session.
+ *
  * @author Erich Maas
  */
-public class Robot extends SampleRobot{
-    
+public class Robot extends SampleRobot {
+
     /**
-     * The amount of time, in milliseconds, between each 
-     * successive periodic 'tick'.
-     * A 'tick' is a call of the tick() method of every
-     * {@link Tickable} object in the set maintained internally by the Robot
-     * class.
+     * The amount of time, in milliseconds, between each successive periodic
+     * 'tick'. A 'tick' is a call of the tick() method of every {@link Tickable}
+     * object in the set maintained internally by the Robot class.
      * <p>
      * This constant allows us to change the resolution of the periodic updates
-     * provided to various classes. A finer resolution, i.e., 
-     * a lower TICK_PERIOD, is more resource intensive, but is more responsive.
+     * provided to various classes. A finer resolution, i.e., a lower
+     * TICK_PERIOD, is more resource intensive, but is more responsive.
      * </p>
      */
     public static final long TICK_PERIOD = 50;
 
-    DigitalInput min = new DigitalInput(99), max = new DigitalInput(99);
     /**
      * This field represents the drive-train of the Robot, and controls its main
      * wheels. It is initialized during {@link robotMain} with all of the speed
@@ -69,13 +67,33 @@ public class Robot extends SampleRobot{
      */
     DualStickController dualstick;
     /**
+     * Limit switch at bottom left of elevator.
+     */
+    DigitalInput leftMin;
+    /**
+     * Limit switch at bottom right of elevator.
+     */
+    DigitalInput rightMin;
+    /**
+     * Limit switch at top left of elevator.
+     */
+    DigitalInput leftMax;
+    /**
+     *Limit switch at top right of elevator.
+     */
+    DigitalInput rightMax;
+    /**
+     * Lift switch that checks if a tote is in the robot.
+     */
+    DigitalInput toteStat;
+    /**
      * The solenoid for the piston that powers the left-flap of the grabber.
      */
-    Solenoid leftFlapSolenoid = new Solenoid(99);
+    Solenoid leftFlapSolenoid;
     /**
      * The solenoid for the piston that powers the right-flap of the grabber.
      */
-    Solenoid rightFlapSolenoid = new Solenoid(99);// Sets up solenoids
+    Solenoid rightFlapSolenoid;
     /**
      * The flight-stick that we use to control the manipulators on our robot.
      */
@@ -93,12 +111,22 @@ public class Robot extends SampleRobot{
      */
     Grabber grabber;
     /**
-     * I don't know what these do. I will wait for Erich to tell me. --Dylan
+     * Speed controller that controls left motor of elevator.
      */
-    Victor lift1 = new Victor(2);
-    Victor lift2 = new Victor(3);
-    Relay leftRoll = new Relay(4), rightRoll = new Relay(5);// Sets up 
-    
+    Victor leftLift;
+    /**
+     * Speed controller that controls right motor of elevator.
+     */
+    Victor rightLift;
+    /**
+     * Spike that controls left roller.
+     */
+    Relay leftRoll;
+    /**
+     * Spike that controls right roller.
+     */
+    Relay rightRoll;
+
     /**
      * A set of objects to be periodically ticked.
      */
@@ -106,7 +134,7 @@ public class Robot extends SampleRobot{
 
     /**
      * The main point of entry for the program.
-     * 
+     *
      * The FIRST library will call this method upon the initialization of the
      * Robot, that is, when the Robot turns on and the roboRIO is booted.
      */
@@ -116,17 +144,31 @@ public class Robot extends SampleRobot{
         ///////////////////////////////////
         // ALL PORTS NEED TO BE ASSIGNED //
         ///////////////////////////////////
-        //THE ROLLERS ARE SPIKES, THE LIFTER IS VICTORS, AND THE TANK DRIVE IS TALONS 
-        robotDrive = new RobotDrive(new Talon(9), new Talon(8), new Talon(7), new Talon(6));
+        //THE ROLLERS ARE SPIKES, THE LIFTER IS VICTORS, AND THE TANK DRIVE IS TALONS
+        rightLift = new Victor(2);
+        leftLift = new Victor(7);
+
+        leftRoll = new Relay(0);
+        rightRoll = new Relay(1);
+
+        leftMax = new DigitalInput(8);
+        rightMax = new DigitalInput(0);
+        leftMin = new DigitalInput(7);
+        rightMin = new DigitalInput(1);
+
+        leftFlapSolenoid = new Solenoid(99);
+        rightFlapSolenoid = new Solenoid(99);
+        
+        robotDrive = new RobotDrive(new Talon(9), new Talon(8), new Talon(0), new Talon(1));
         dualstick = new DualStickController(1); //Creates dualstick controller
         joy = new Joystick(2);//Create sjoystick
-        //lifter = new Lifter(lift1, lift2, min, max);//Creates lifter with Speed controllers and limit switches
-        //grabber = new Grabber(leftFlapSolenoid, rightFlapSolenoid, min);//Creates grabber with solenoids
-        //roller = new Roller(leftRoll, rightRoll);//Creates roller with speed controllers
-        
+        lifter = new Lifter(leftLift, rightLift, leftMin, leftMax, rightMin, rightMax);//Creates lifter with Speed controllers and limit switches
+        grabber = new Grabber(leftFlapSolenoid, rightFlapSolenoid, leftMin, rightMin);//Creates grabber with solenoids
+        roller = new Roller(leftRoll, rightRoll, toteStat);//Creates roller with speed controllers
+
         Teleop teleop = new Teleop(dualstick, joy); //Creates teleop with two controllers
         teleop.init(robotDrive, lifter, grabber, roller);//Initializes teleop
-        
+
         addTickable(lifter);
         addTickable(grabber);
         addTickable(roller);
@@ -148,9 +190,9 @@ public class Robot extends SampleRobot{
 
     /**
      * Adds a Tickable object to the list of Tickable objects. These objects'
-     * tick methods will be, synchronously, and in no particular order,
-     * invoked periodically, with a 50 millisecond gap in between 
-     * each iteration.
+     * tick methods will be, synchronously, and in no particular order, invoked
+     * periodically, with a 50 millisecond gap in between each iteration.
+     *
      * @param tickable the object that should be added to the set
      */
     public void addTickable(Tickable tickable) {//Adds an object to a list of tickables
@@ -159,6 +201,7 @@ public class Robot extends SampleRobot{
 
     /**
      * Removes a Tickable object from the list of Tickable objects.
+     *
      * @param tickable the object to remove
      */
     public void removeTickable(Tickable tickable) {//Removes object from list
