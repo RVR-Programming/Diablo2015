@@ -23,9 +23,17 @@
 package diablo2015;
 
 /**
- *
- * @author user
+ * This class does this thing
+ * 
+ * An extended description of what the thing is and how it does it here
+ * @author Erich Maas
  */
 public interface Tickable {
+    
+    /**
+     * Tick this object.
+     * 
+     * This method should be called periodically.
+     */
     public void tick();
 }

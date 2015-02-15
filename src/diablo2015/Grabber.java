@@ -25,37 +25,79 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Solenoid;
 
 /**
+ * Extends and retracts pistons to grab or release the totes.
  *
- * @author user
+ *
+ * @author Erich
  */
 public class Grabber implements Tickable {
+    /**
+     * The solenoid for the left flap of the grabber.
+     */
+    private final Solenoid left;
+    /**
+     * The solenoid for the right flap of the grabber.
+     */
+    private final Solenoid right;
+    /**
+     * The limit switch for the bottom of the left side of the elevator.
+     */
+    private final DigitalInput leftMin;
+    /**
+     * The limit switch for the bottom of the right side of the elevator.
+     */
+    private final DigitalInput rightMin;
+    /**
+     * It says if the elevator is fully lowered.
+     */
+    private boolean lowered;
 
-    private final Solenoid left, right;
-    private final DigitalInput min;
-
-    public Grabber(Solenoid left, Solenoid right, DigitalInput min) {//Initializes all pistons
+    /**
+     *
+     * @param left The solenoid for the left flap
+     * @param right The solenoid for the right flap
+     * @param leftMin The left limit switch that tells if the lifter is lowered
+     * @param rightMin The right limit switch that tells if the lifter is
+     * lowered
+     *
+     */
+    public Grabber(Solenoid left, Solenoid right, DigitalInput leftMin, DigitalInput rightMin) {//Initializes all pistons
         this.left = left;
         this.right = right;
-        this.min = min;
+        this.leftMin = leftMin;
+        this.rightMin = rightMin;
 
     }
 
+    /**
+     * Sets both solenoids for the flaps to "true" to pick up the totes if
+     * elevator is fully lowered.
+     */
     public void grab() { //Extends all pistons to grab crate
-        if (min.get()) { // Only works when lifter fully lowered
+        if (lowered) { // Only works when lifter fully lowered
             left.set(true);
             right.set(true);
+
         }
     }
 
+    /**
+     * Sets both solenoids for the flaps to "false" to pick up the totes if
+     * elevator is fully lowered.
+     */
     public void release() {//Retracts all pistons to release crate
-        if (min.get()) {   // Only works when fully lowered
+        if (lowered) {   // Only works when fully lowered
             left.set(false);
             right.set(false);
         }
     }
 
+    /**
+     *
+     * Check to see if both minimum limit switches have been activated.
+     */
     public void tick() {
-
+        lowered = rightMin.get() && leftMin.get();
     }
 
 }

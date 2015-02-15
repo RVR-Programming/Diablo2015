@@ -21,35 +21,78 @@
  */
 package diablo2015;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Relay;
-import edu.wpi.first.wpilibj.Talon;
 
 /**
- *
- * @author user
+ *Controls the rollers that pull the totes in
+ * 
+ * @author Erich Maas
  */
 public class Roller implements Tickable {
-
-    private final Relay left, right; 
-    private int rollerSpeed;
-
-    public Roller(Relay left, Relay right) {
+    /**
+     * Counter for the tick method.
+     */
+    private int tickCount = 0;
+    /**
+     * Left Spike for the roller.
+     */
+    private final Relay left;
+    /**
+     * Right Spike for the roller.
+     */
+    private final Relay right;
+    /**
+     * Limit switch that checks if tote is in robot
+     */
+    private final DigitalInput toteSwitch;
+    /**
+     * Sets if the rollers will go in, out, or be stopped 
+     */
+    private int speed = 0;
+/**
+ * Constructs the roller object
+ * @param left Spike for the left motor
+ * @param right Spike for the right motor
+ */  
+    public Roller(Relay left, Relay right, DigitalInput toteSwitch) {
         this.left = left;
         this.right = right;
+        this.toteSwitch = toteSwitch;
     }
-
+/**
+ * Both Rollers are set to pull in at max speed.
+ * Motors spin in opposite directions
+ */
     public void in() { //Both rollers go in max speed
-        left.set(Relay.Value.kOn);
-        right.set(Relay.Value.kOn);
+        speed = 1;
     }
-
+/**
+ * Both Rollers are set to push out at maximum speed.
+ * Motors spin in opposite directions.
+ */
     public void out() {//Both rollers go out max speed
-        left.set(Relay.Value.kOff);
-        right.set(Relay.Value.kOff);
+        speed = -1;
     }
-
+/**
+ * Controls direction of the rollers and time the rollers are activated.
+ */
     public void tick() {
-
+        
+        if(speed < 0 && !toteSwitch.get() && tickCount < 31){
+            left.set(Relay.Value.kOn);
+            right.set(Relay.Value.kReverse);
+            tickCount++;
+        }
+        if(speed > 0){
+            left.set(Relay.Value.kReverse);
+            right.set(Relay.Value.kOn);
+        }
+        else{
+            speed = 0;
+            left.set(Relay.Value.kOff);
+            right.set(Relay.Value.kOff);
+        }
     }
 
 }
