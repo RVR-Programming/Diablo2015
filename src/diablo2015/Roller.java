@@ -34,7 +34,7 @@ public class Roller implements Tickable {
     /**
      * Counter for the tick method.
      */
-    public int tickCount;
+    private int tickCount;
     /**
      * Left Spike for the roller.
      */

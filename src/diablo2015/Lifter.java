@@ -95,8 +95,8 @@ public class Lifter implements Tickable {
      * Lowers the elevator if it is not already at bottom.
      */
     public void down() {
-        leftSpeed = -1;
-        rightSpeed = -1;
+        leftSpeed = 1;
+        rightSpeed = 1;
     }
 
     /**
@@ -104,8 +104,12 @@ public class Lifter implements Tickable {
      */
     public void up() {
 
-        leftSpeed = 1;
+        leftSpeed = -1;
         rightSpeed = -1;
+    }
+    public void stop(){
+        leftSpeed = 0;
+        rightSpeed = 0;
     }
 
     /**

@@ -150,8 +150,8 @@ public class Robot extends SampleRobot {
         rightLift = new Victor(2);
         leftLift = new Victor(7);
 
-        leftRoll = new Relay(0);
-        rightRoll = new Relay(1);
+        leftRoll = new Relay(7);
+        rightRoll = new Relay(2);
 
         leftMax = new DigitalInput(8);
         rightMax = new DigitalInput(0);

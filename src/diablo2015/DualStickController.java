@@ -131,10 +131,11 @@ public class DualStickController extends GenericHID {
      */
     
     public boolean getBumper(Hand hand) {//Returns bumper
+        
         if (hand == Hand.kLeft) {//Checks left or right
-           return true;//getBumper(Hand.kLeft);
+           return getRawButton(5);
         } else {
-            return true;//getBumper(Hand.kRight);
+            return getRawButton(6);
         }
     }
     /**

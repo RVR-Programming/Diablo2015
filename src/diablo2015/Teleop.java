@@ -114,18 +114,19 @@ public class Teleop implements Tickable {
             grabbing = !grabbing;//Change booleean
         }
 
-        if (joy.getRawButton(2)) {//Roll in on joy button 12
+        if (joy.getRawButton(1)) {//Roll in on joy button 12
             roller.in();
         }
         if (joy.getRawButton(11)) {//Roll out on joy button 11
             roller.out();
         }
-        if (joy.getY() > -.5) {// May need to change variable
+        if (joy.getY() < -.5) {// May need to change variable
             lifter.up();     // If joy is forward, lift elevator
-        }
-        if (joy.getY() < .5)//May need to change variable
+        }else if (joy.getY() > .5)//May need to change variable
         {
             lifter.down();// If joy is back, lower elevator
+        }else{
+            lifter.stop();
         }
     }
 
