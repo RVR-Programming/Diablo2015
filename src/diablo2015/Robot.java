@@ -25,8 +25,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotDrive;
-import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Victor;
@@ -43,7 +43,7 @@ import java.util.Iterator;
  *
  * @author Erich Maas
  */
-public class Robot extends SampleRobot {
+public class Robot extends RobotBase {
 
     /**
      * The amount of time, in milliseconds, between each successive periodic
@@ -72,10 +72,6 @@ public class Robot extends SampleRobot {
      * Limit switch at bottom left of elevator.
      */
     Joystick joy;
-    /**
-     * Teleop for the robot.
-     */
-    Teleop teleop;
     /**
      * The roller we use to pull totes into our robot.
      */
@@ -146,23 +142,22 @@ public class Robot extends SampleRobot {
     Relay rightRoll;
 
     /**
+     * The current object that controls the robot. It should be an instance of
+     * Autonomous or Teleop (or null if disabled), usually.
+     */
+    private Tickable currentControl;
+    
+    private Mode mode = Mode.DISABLED;
+
+    /**
      * A set of objects to be periodically ticked.
      */
     private final HashSet<Tickable> tickables = new HashSet<>();
 
     /**
-     * The main point of entry for the program.
-     *
-     * The FIRST library will call this method upon the initialization of the
-     * Robot, that is, when the Robot turns on and the roboRIO is booted.
+     * Construct a new Robot. This initializes all of the hardware on the Robot.
      */
-    @Override
-    public void robotMain() {
-        //TODO:
-        ///////////////////////////////////
-        // ALL PORTS NEED TO BE ASSIGNED //
-        ///////////////////////////////////
-        //THE ROLLERS ARE SPIKES, THE LIFTER IS VICTORS, AND THE TANK DRIVE IS TALONS
+    public Robot() {
         rightLift = new Victor(2);
         leftLift = new Victor(7);
 
@@ -182,58 +177,91 @@ public class Robot extends SampleRobot {
         rightRetract = new Solenoid(4);
 
         robotDrive = new RobotDrive(new Talon(9), new Talon(8), new Talon(0), new Talon(1));
-        dualstick = new DualStickController(0); //Creates dualstick controller
-        joy = new Joystick(1);//Create sjoystick
-        lifter = new Lifter(leftLift, rightLift, leftMin, leftMax, rightMin, rightMax);//Creates lifter with Speed controllers and limit switches
-        grabber = new Grabber(leftRetract, leftExtend, rightRetract, rightExtend, leftMin, rightMin);//Creates grabber with solenoids
-        roller = new Roller(leftRoll, rightRoll, leftStat, rightStat);//Creates roller with speed controllers
+        dualstick = new DualStickController(0);
+        joy = new Joystick(1);
+        lifter = new Lifter(leftLift, rightLift, leftMin, leftMax, rightMin, rightMax);
+        grabber = new Grabber(leftRetract, leftExtend, rightRetract, rightExtend, leftMin, rightMin);
+        roller = new Roller(leftRoll, rightRoll, leftStat, rightStat);
+    }
 
-        teleop = new Teleop(dualstick, joy); //Creates teleop with two controllers
-        teleop.init(robotDrive, lifter, grabber, roller);//Initializes teleop
-
-        addTickable(this::otherMethod);
-        addTickable(teleop);
+    @Override
+    public void startCompetition() {
+        Tickable dashboardUpdater = this::updateDashboard;
+        Tickable modeUpdater = this::updateMode;
+        addTickable(dashboardUpdater);
+        addTickable(modeUpdater);
         addTickable(lifter);
         addTickable(grabber);
         addTickable(roller);
         while (true) {
-            Iterator<Tickable> it = tickables.iterator();
-            while (it.hasNext()) {
-                Tickable t = it.next();//Ticks all tickable things
-                t.tick();
-            }
-            try {
-                Thread.sleep(TICK_PERIOD);//Waits 50 milisecs
-            } catch (Exception x) {
-            }
+            tick();
         }
-
     }
 
-    private void otherMethod() {
+    public void tick() {
+        Iterator<Tickable> it = tickables.iterator();
+        while (it.hasNext()) {
+            Tickable t = it.next();//Ticks all tickable things
+            t.tick();
+        }
+        try {
+            Thread.sleep(TICK_PERIOD);
+        } catch (Exception x) {
+        }
+    }
+
+    private void updateMode() {
+        if (isAutonomous() && mode != Mode.AUTO) {
+            switchToAuto();
+            mode = Mode.AUTO;
+        } else if (isOperatorControl() && mode != Mode.TELEOP) {
+            switchToTeleop();
+            mode = Mode.TELEOP;
+        } else if (mode != Mode.DISABLED){
+            disable();
+            mode = Mode.DISABLED;
+        }
+    }
+
+    private void switchToTeleop() {
+        removeCurrentControl();
+        Teleop teleop = new Teleop(dualstick, joy);
+        teleop.init(robotDrive, lifter, grabber, roller);
+        currentControl = teleop;
+        addTickable(currentControl);
+    }
+
+    private void switchToAuto() {
+        removeCurrentControl();
+        Autonomous auto = new Autonomous();
+        currentControl = auto;
+        addTickable(currentControl);
+    }
+
+    private void disable() {
+        removeCurrentControl();
+        currentControl = null;
+    }
+
+    private void removeCurrentControl() {
+        if (currentControl != null) {
+            removeTickable(currentControl);
+        }
+    }
+
+    private void updateDashboard() {
         SmartDashboard.putString("Flaps", grabber.toString());
-        SmartDashboard.putString("Elevator Status", lifter.toString());
+        SmartDashboard.putString("Elevator Statuseee", lifter.toString());
         SmartDashboard.putBoolean("Crate in Loader: ", !leftStat.get() && !rightStat.get());
         SmartDashboard.putString("Roller Direction: ", roller.toString());
         SmartDashboard.putBoolean("Half Speed: ", dualstick.getBumper(GenericHID.Hand.kLeft)
                 && dualstick.getBumper(GenericHID.Hand.kRight));
     }
 
-    @Override
-    public void operatorControl() {
-        System.out.println("Called");
-    }
-
-    @Override
-    public void autonomous() {
-        super.autonomous(); //To change body of generated methods, choose Tools | Templates.
-
-    }
-
     /**
      * Adds a Tickable object to the list of Tickable objects. These objects'
      * tick methods will be, synchronously, and in no particular order, invoked
-     * periodically, with a 50 millisecond gap in between each iteration.
+     * periodically, with a TICK_PERIOD millisecond gap in between each iteration.
      *
      * @param tickable the object that should be added to the set
      */
@@ -249,4 +277,9 @@ public class Robot extends SampleRobot {
     public void removeTickable(Tickable tickable) {//Removes object from list
         tickables.remove(tickable);
     }
+    
+    private enum Mode {
+        AUTO, TELEOP, DISABLED;
+    }
+    
 }
