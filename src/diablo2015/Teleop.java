@@ -94,8 +94,8 @@ public class Teleop implements Tickable {
         }
         
         double leftValue, rightValue;
-        leftValue = dualStick.getY(GenericHID.Hand.kLeft);//Gets left stick
-        rightValue = dualStick.getY(GenericHID.Hand.kRight);// Gets right stick 
+        leftValue = (dualStick.getY(GenericHID.Hand.kLeft) * -1);//Gets left stick
+        rightValue = (dualStick.getY(GenericHID.Hand.kRight)*-1);// Gets right stick 
         rd.tankDrive(leftValue, rightValue);// Sets up tank drive for robot
 
         //Set up all buttons for lifter, grabber, and roller
@@ -120,10 +120,10 @@ public class Teleop implements Tickable {
         if (joy.getRawButton(11)) {//Roll out on joy button 11
             roller.out();
         }
-        if (joy.getX() < -.5) {// May need to change variable
+        if (joy.getY() > -.5) {// May need to change variable
             lifter.up();     // If joy is forward, lift elevator
         }
-        if (joy.getY() > .5)//May need to change variable
+        if (joy.getY() < .5)//May need to change variable
         {
             lifter.down();// If joy is back, lower elevator
         }
