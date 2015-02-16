@@ -35,11 +35,13 @@ public class Grabber implements Tickable {
     /**
      * The solenoid for the left flap of the grabber.
      */
-    private final Solenoid left;
+    private final Solenoid leftExtend;
     /**
      * The solenoid for the right flap of the grabber.
      */
-    private final Solenoid right;
+    private final Solenoid leftRetract;
+    private final Solenoid rightExtend;
+    private final Solenoid rightRetract;
     /**
      * The limit switch for the bottom of the left side of the elevator.
      */
@@ -62,11 +64,14 @@ public class Grabber implements Tickable {
      * lowered
      *
      */
-    public Grabber(Solenoid left, Solenoid right, DigitalInput leftMin, DigitalInput rightMin) {//Initializes all pistons
-        this.left = left;
-        this.right = right;
+    public Grabber(Solenoid leftExtend, Solenoid leftRetract, Solenoid rightExtend,Solenoid rightRetract, DigitalInput leftMin, DigitalInput rightMin) {//Initializes all pistons
+        this.leftExtend = leftExtend;
+        this.leftRetract = leftRetract;
+        this.rightExtend = rightExtend;
+        this.rightRetract = rightRetract;
         this.leftMin = leftMin;
         this.rightMin = rightMin;
+        
 
     }
 
@@ -76,8 +81,10 @@ public class Grabber implements Tickable {
      */
     public void grab() { //Extends all pistons to grab crate
         if (lowered) { // Only works when lifter fully lowered
-            left.set(true);
-            right.set(true);
+            leftRetract.set(false);
+            rightRetract.set(false);
+            leftExtend.set(true);
+            rightExtend.set(true);
 
         }
     }
@@ -88,8 +95,11 @@ public class Grabber implements Tickable {
      */
     public void release() {//Retracts all pistons to release crate
         if (lowered) {   // Only works when fully lowered
-            left.set(false);
-            right.set(false);
+            leftExtend.set(false);
+            rightExtend.set(false);
+            leftRetract.set(true);
+            rightRetract.set(true);
+            
         }
     }
 

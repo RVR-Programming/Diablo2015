@@ -105,7 +105,7 @@ public class Teleop implements Tickable {
 
         //BUTTONS WILL NEED TO BE CHANGED
         boolean grabbing = false;
-        if (joy.getTrigger(GenericHID.Hand.kLeft)) {//On joystick trigger
+        if (joy.getTrigger()) {//On joystick trigger
             if (grabbing) {
                 grabber.release();//If grabbing, release
             } else {

@@ -89,11 +89,13 @@ public class Robot extends SampleRobot {
     /**
      * The solenoid for the piston that powers the left-flap of the grabber.
      */
-    Solenoid leftFlapSolenoid;
+    Solenoid leftExtend;
     /**
      * The solenoid for the piston that powers the right-flap of the grabber.
      */
-    Solenoid rightFlapSolenoid;
+    Solenoid leftRetract;
+    Solenoid rightExtend;
+    Solenoid rightRetract;
     /**
      * The flight-stick that we use to control the manipulators on our robot.
      */
@@ -157,14 +159,17 @@ public class Robot extends SampleRobot {
         rightMin = new DigitalInput(1);
         toteStat = new DigitalInput(9);
 
-        leftFlapSolenoid = new Solenoid(5);
-        rightFlapSolenoid = new Solenoid(2);
+        leftExtend = new Solenoid(5);
+        leftRetract = new Solenoid(2);
+        
+        rightExtend = new Solenoid(3);
+        rightRetract = new Solenoid(4);
         
         robotDrive = new RobotDrive(new Talon(9), new Talon(8), new Talon(0), new Talon(1));
         dualstick = new DualStickController(0); //Creates dualstick controller
         joy = new Joystick(1);//Create sjoystick
         lifter = new Lifter(leftLift, rightLift, leftMin, leftMax, rightMin, rightMax);//Creates lifter with Speed controllers and limit switches
-        grabber = new Grabber(leftFlapSolenoid, rightFlapSolenoid, leftMin, rightMin);//Creates grabber with solenoids
+        grabber = new Grabber(leftRetract, leftExtend, rightRetract, rightExtend, leftMin, rightMin);//Creates grabber with solenoids
         roller = new Roller(leftRoll, rightRoll, toteStat, 0);//Creates roller with speed controllers
 
         Teleop teleop = new Teleop(dualstick, joy); //Creates teleop with two controllers
