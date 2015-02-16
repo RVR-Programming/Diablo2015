@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj.Solenoid;
  * @author Erich
  */
 public class Grabber implements Tickable {
+
     /**
      * The solenoid for the left flap of the grabber.
      */

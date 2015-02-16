@@ -155,16 +155,17 @@ public class Robot extends SampleRobot {
         rightMax = new DigitalInput(0);
         leftMin = new DigitalInput(7);
         rightMin = new DigitalInput(1);
+        toteStat = new DigitalInput(9);
 
-        leftFlapSolenoid = new Solenoid(99);
-        rightFlapSolenoid = new Solenoid(99);
+        leftFlapSolenoid = new Solenoid(5);
+        rightFlapSolenoid = new Solenoid(2);
         
         robotDrive = new RobotDrive(new Talon(9), new Talon(8), new Talon(0), new Talon(1));
-        dualstick = new DualStickController(1); //Creates dualstick controller
-        joy = new Joystick(2);//Create sjoystick
+        dualstick = new DualStickController(0); //Creates dualstick controller
+        joy = new Joystick(1);//Create sjoystick
         lifter = new Lifter(leftLift, rightLift, leftMin, leftMax, rightMin, rightMax);//Creates lifter with Speed controllers and limit switches
         grabber = new Grabber(leftFlapSolenoid, rightFlapSolenoid, leftMin, rightMin);//Creates grabber with solenoids
-        roller = new Roller(leftRoll, rightRoll, toteStat);//Creates roller with speed controllers
+        roller = new Roller(leftRoll, rightRoll, toteStat, 0);//Creates roller with speed controllers
 
         Teleop teleop = new Teleop(dualstick, joy); //Creates teleop with two controllers
         teleop.init(robotDrive, lifter, grabber, roller);//Initializes teleop

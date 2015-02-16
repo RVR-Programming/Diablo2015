@@ -34,7 +34,7 @@ public class Roller implements Tickable {
     /**
      * Counter for the tick method.
      */
-    private int tickCount = 0;
+    public int tickCount;
     /**
      * Left Spike for the roller.
      */
@@ -58,10 +58,11 @@ public class Roller implements Tickable {
      * @param left Spike for the left motor
      * @param right Spike for the right motor
      */
-    public Roller(Relay left, Relay right, DigitalInput toteSwitch) {
+    public Roller(Relay left, Relay right, DigitalInput toteSwitch, int tickCount) {
         this.left = left;
         this.right = right;
         this.toteSwitch = toteSwitch;
+        this.tickCount = tickCount;
     }
 
     /**
@@ -84,7 +85,6 @@ public class Roller implements Tickable {
      * Controls direction of the rollers and time the rollers are activated.
      */
     public void tick() {
-
         if (speed < 0 && !toteSwitch.get()) {
             left.set(Relay.Value.kOn);
             right.set(Relay.Value.kReverse);
@@ -92,11 +92,12 @@ public class Roller implements Tickable {
             left.set(Relay.Value.kReverse);
             right.set(Relay.Value.kOn);
         } else {
-           left.set(Relay.Value.kOff);
-           right.set(Relay.Value.kOff);
+            left.set(Relay.Value.kOff);
+            right.set(Relay.Value.kOff);
         }
-        if (tickCount > 31 || toteSwitch.get()) {
-            speed = 0;
+
+        if ((tickCount > 31) || toteSwitch.get()) {//Turns Rollers off when tickCOunt goes above limit
+            speed = 0;                             // Or limit switch is pressed
             tickCount = 0;
             left.set(Relay.Value.kOff);
             right.set(Relay.Value.kOff);
@@ -104,5 +105,4 @@ public class Roller implements Tickable {
             tickCount++;
         }
     }
-
 }
