@@ -148,7 +148,7 @@ public class DualStickController extends GenericHID {
     }
     /**
      * Always return 0
-     * @param pov
+     * @param pov Ignored, always returns 0
      * @return 0
      */
     @Override
