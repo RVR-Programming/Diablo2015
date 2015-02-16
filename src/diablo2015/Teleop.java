@@ -122,10 +122,10 @@ public class Teleop implements Tickable {
             roller.out();
         }
         if (joy.getY() < -.5) {// May need to change variable
-            lifter.up();     // If joy is forward, lift elevator
+            lifter.down();     // If joy is forward, lift elevator
         } else if (joy.getY() > .5)//May need to change variable
         {
-            lifter.down();// If joy is back, lower elevator
+            lifter.up();// If joy is back, lower elevator
         } else {
             lifter.stop();
         }
