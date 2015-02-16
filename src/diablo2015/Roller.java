@@ -46,7 +46,8 @@ public class Roller implements Tickable {
     /**
      * Limit switch that checks if tote is in robot
      */
-    private final DigitalInput toteSwitch;
+    private final DigitalInput leftStat;
+    private final DigitalInput rightStat;
     /**
      * Sets if the rollers will go in, out, or be stopped
      */
@@ -57,12 +58,13 @@ public class Roller implements Tickable {
      *
      * @param left Spike for the left motor
      * @param right Spike for the right motor
-     * @param toteSwitch Limit switch that checks if a tote is in the robot
+     * @param leftStat Limit switch that checks if a tote is in the robot
      */
-    public Roller(Relay left, Relay right, DigitalInput toteSwitch) {
+    public Roller(Relay left, Relay right, DigitalInput leftStat, DigitalInput rightStat) {
         this.left = left;
         this.right = right;
-        this.toteSwitch = toteSwitch;
+        this.leftStat = leftStat;
+        this.rightStat = rightStat;
     }
 
     /**
@@ -85,17 +87,18 @@ public class Roller implements Tickable {
      * Controls direction of the rollers and time the rollers are activated.
      */
     public void tick() {
-        if (speed < 0 && !toteSwitch.get()) {
-        //    if (left.get() == Relay.Value.kReverse) {
-                left.set(Relay.Value.kForward);
-                right.set(Relay.Value.kReverse);
-          //  }
+        if (speed < 0 && !leftStat.get()) {
+            //    if (left.get() == Relay.Value.kReverse) {
+            left.set(Relay.Value.kReverse);
+            right.set(Relay.Value.kForward);
+            //  }
             //left.set(Relay.Value.kOn);
             //right.set(Relay.Value.kOn);
 
-        } else if (speed > 0) {
-            left.set(Relay.Value.kReverse);
-            right.set(Relay.Value.kForward);
+        }
+        if (speed > 0) {
+            left.set(Relay.Value.kForward);
+            right.set(Relay.Value.kReverse);
             //left.set(Relay.Value.kOn);
             //right.set(Relay.Value.kOn);
         } else {
@@ -105,7 +108,7 @@ public class Roller implements Tickable {
             right.set(Relay.Value.kOff);
         }
 
-        if ((tickCount > 50) || !toteSwitch.get()) {//Turns Rollers off when tickCOunt goes above limit
+        if ((tickCount > 50) || !leftStat.get()) {//Turns Rollers off when tickCOunt goes above limit
             speed = 0;                             // Or limit switch is pressed
             tickCount = 0;
             left.set(Relay.Value.kOff);

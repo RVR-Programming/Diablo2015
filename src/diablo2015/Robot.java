@@ -79,13 +79,14 @@ public class Robot extends SampleRobot {
      */
     DigitalInput leftMax;
     /**
-     *Limit switch at top right of elevator.
+     * Limit switch at top right of elevator.
      */
     DigitalInput rightMax;
     /**
      * Lift switch that checks if a tote is in the robot.
      */
-    DigitalInput toteStat;
+    DigitalInput leftStat;
+    DigitalInput rightStat;
     /**
      * The solenoid for the piston that powers the left-flap of the grabber.
      */
@@ -154,23 +155,24 @@ public class Robot extends SampleRobot {
         rightRoll = new Relay(1);
 
         leftMax = new DigitalInput(8);
-        rightMax = new DigitalInput(0);
-        leftMin = new DigitalInput(7);
-        rightMin = new DigitalInput(1);
-        toteStat = new DigitalInput(9);
+        leftMin = new DigitalInput(9);
+        leftStat = new DigitalInput(7);
+        rightMax = new DigitalInput(1);
+        rightMin = new DigitalInput(0);
+        rightStat = new DigitalInput(2);
 
         leftExtend = new Solenoid(5);
         leftRetract = new Solenoid(2);
-        
+
         rightExtend = new Solenoid(3);
         rightRetract = new Solenoid(4);
-        
+
         robotDrive = new RobotDrive(new Talon(9), new Talon(8), new Talon(0), new Talon(1));
         dualstick = new DualStickController(0); //Creates dualstick controller
         joy = new Joystick(1);//Create sjoystick
         lifter = new Lifter(leftLift, rightLift, leftMin, leftMax, rightMin, rightMax);//Creates lifter with Speed controllers and limit switches
         grabber = new Grabber(leftRetract, leftExtend, rightRetract, rightExtend, leftMin, rightMin);//Creates grabber with solenoids
-        roller = new Roller(leftRoll, rightRoll, toteStat);//Creates roller with speed controllers
+        roller = new Roller(leftRoll, rightRoll, leftStat, rightStat);//Creates roller with speed controllers
 
         Teleop teleop = new Teleop(dualstick, joy); //Creates teleop with two controllers
         teleop.init(robotDrive, lifter, grabber, roller);//Initializes teleop
