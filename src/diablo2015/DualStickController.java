@@ -55,7 +55,7 @@ public class DualStickController extends GenericHID {
         if (hand == Hand.kLeft) {//Checks for left or right 
             return getRawAxis(0);
         } else {
-            return getRawAxis(2);
+            return getRawAxis(4);
         }
     }
     /**
@@ -67,7 +67,7 @@ public class DualStickController extends GenericHID {
         if (hand == Hand.kLeft) {//Checcks left or right
             return getRawAxis(1);
         } else {
-            return getRawAxis(3);
+            return getRawAxis(5);
         }
     }
     /**
@@ -129,11 +129,12 @@ public class DualStickController extends GenericHID {
      * @param hand Bumper being tested
      * @return value of bumper
      */
+    
     public boolean getBumper(Hand hand) {//Returns bumper
         if (hand == Hand.kLeft) {//Checks left or right
-            return getBumper(Hand.kLeft);
+           return true;//getBumper(Hand.kLeft);
         } else {
-            return getBumper(Hand.kRight);
+            return true;//getBumper(Hand.kRight);
         }
     }
     /**
