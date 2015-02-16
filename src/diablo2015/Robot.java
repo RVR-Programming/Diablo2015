@@ -150,8 +150,8 @@ public class Robot extends SampleRobot {
         rightLift = new Victor(2);
         leftLift = new Victor(7);
 
-        leftRoll = new Relay(7);
-        rightRoll = new Relay(2);
+        leftRoll = new Relay(0);
+        rightRoll = new Relay(1);
 
         leftMax = new DigitalInput(8);
         rightMax = new DigitalInput(0);
@@ -170,7 +170,7 @@ public class Robot extends SampleRobot {
         joy = new Joystick(1);//Create sjoystick
         lifter = new Lifter(leftLift, rightLift, leftMin, leftMax, rightMin, rightMax);//Creates lifter with Speed controllers and limit switches
         grabber = new Grabber(leftRetract, leftExtend, rightRetract, rightExtend, leftMin, rightMin);//Creates grabber with solenoids
-        roller = new Roller(leftRoll, rightRoll, toteStat, 0);//Creates roller with speed controllers
+        roller = new Roller(leftRoll, rightRoll, toteStat);//Creates roller with speed controllers
 
         Teleop teleop = new Teleop(dualstick, joy); //Creates teleop with two controllers
         teleop.init(robotDrive, lifter, grabber, roller);//Initializes teleop

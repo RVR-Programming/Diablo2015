@@ -72,6 +72,10 @@ public class Grabber implements Tickable {
         this.leftMin = leftMin;
         this.rightMin = rightMin;
         
+        rightRetract.set(false);
+        leftRetract.set(false);
+        rightExtend.set(true);
+        leftExtend.set(true);
 
     }
 
@@ -80,13 +84,13 @@ public class Grabber implements Tickable {
      * elevator is fully lowered.
      */
     public void grab() { //Extends all pistons to grab crate
-        if (lowered) { // Only works when lifter fully lowered
+       // if (lowered) { // Only works when lifter fully lowered
             leftRetract.set(false);
             rightRetract.set(false);
             leftExtend.set(true);
             rightExtend.set(true);
 
-        }
+        //}
     }
 
     /**
@@ -94,13 +98,13 @@ public class Grabber implements Tickable {
      * elevator is fully lowered.
      */
     public void release() {//Retracts all pistons to release crate
-        if (lowered) {   // Only works when fully lowered
+        //if (lowered) {   // Only works when fully lowered
             leftExtend.set(false);
             rightExtend.set(false);
             leftRetract.set(true);
             rightRetract.set(true);
             
-        }
+        //}
     }
 
     /**

@@ -105,7 +105,7 @@ public class Teleop implements Tickable {
 
         //BUTTONS WILL NEED TO BE CHANGED
         boolean grabbing = false;
-        if (joy.getTrigger()) {//On joystick trigger
+        if (joy.getRawButton(1)) {//On joystick trigger
             if (grabbing) {
                 grabber.release();//If grabbing, release
             } else {
@@ -114,10 +114,10 @@ public class Teleop implements Tickable {
             grabbing = !grabbing;//Change booleean
         }
 
-        if (joy.getRawButton(1)) {//Roll in on joy button 12
+        if (joy.getRawButton(2)) {//Roll in on joy button 2
             roller.in();
         }
-        if (joy.getRawButton(11)) {//Roll out on joy button 11
+        if (joy.getRawButton(12)) {//Roll out on joy button 12
             roller.out();
         }
         if (joy.getY() < -.5) {// May need to change variable
