@@ -75,8 +75,8 @@ public class Roller implements Tickable {
     }
 
     /**
-     * Both Rollers are set to pull in at max speed. Motors spin in opposite
-     * directions
+     * Both Rollers are set to pull in at max speed for 3 seconds. Motors spin 
+     * in opposite directions.
      */
     public void in() { //Both rollers go in max speed
         leftSpeed = 1;
@@ -85,8 +85,8 @@ public class Roller implements Tickable {
     }
 
     /**
-     * Both Rollers are set to push out at maximum speed. Motors spin in
-     * opposite directions.
+     * Both Rollers are set to push out at max speed for 3 seconds. Motors spin 
+     * in opposite directions.
      */
     public void out() {//Both rollers go out max speed
         leftSpeed = -1;
@@ -124,6 +124,16 @@ public class Roller implements Tickable {
                 left.set(Relay.Value.kOff);
                 right.set(Relay.Value.kOff);
             }
+        }
+    }
+    @Override
+    public String toString(){
+        if(leftSpeed < 0){
+            return "OUT";
+        } else if(leftSpeed > 0){
+            return "IN";
+        } else{
+            return "OFF";
         }
     }
 }

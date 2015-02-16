@@ -22,6 +22,7 @@
 package diablo2015;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.RobotDrive;
@@ -29,6 +30,7 @@ import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Victor;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -53,7 +55,7 @@ public class Robot extends SampleRobot {
      * TICK_PERIOD, is more resource intensive, but is more responsive.
      * </p>
      */
-    public static final long TICK_PERIOD = 50;
+    public static final long TICK_PERIOD = 20;
 
     /**
      * This field represents the drive-train of the Robot, and controls its main
@@ -69,6 +71,14 @@ public class Robot extends SampleRobot {
     /**
      * Limit switch at bottom left of elevator.
      */
+    Joystick joy;
+    /**
+     * Teleop for the robot.
+     */
+    Teleop teleop;
+    /**
+     * The roller we use to pull totes into our robot.
+     */
     DigitalInput leftMin;
     /**
      * Limit switch at bottom right of elevator.
@@ -83,26 +93,31 @@ public class Robot extends SampleRobot {
      */
     DigitalInput rightMax;
     /**
-     * Lift switch that checks if a tote is in the robot.
+     * Limit switch that checks if a tote is in the robot.
      */
     DigitalInput leftStat;
+    /**
+     * Limit switch that checks if a tote is in the robot.
+     */
     DigitalInput rightStat;
     /**
-     * The solenoid for the piston that powers the left-flap of the grabber.
+     * The solenoid for the piston that extends the left-flap of the grabber.
      */
     Solenoid leftExtend;
     /**
-     * The solenoid for the piston that powers the right-flap of the grabber.
+     * The solenoid for the piston that retracts the left-flap of the grabber.
      */
     Solenoid leftRetract;
+    /**
+     * The solenoid for the piston that extends the right-flap of the grabber.
+     */
     Solenoid rightExtend;
+    /**
+     * The solenoid for the piston that retracts the right-flap of the grabber.
+     */
     Solenoid rightRetract;
     /**
      * The flight-stick that we use to control the manipulators on our robot.
-     */
-    Joystick joy;
-    /**
-     * The roller we use to pull totes into our robot.
      */
     Roller roller;
     /**
@@ -157,13 +172,12 @@ public class Robot extends SampleRobot {
         leftMax = new DigitalInput(8);
         leftMin = new DigitalInput(9);
         leftStat = new DigitalInput(7);
-        rightMax = new DigitalInput(1);
-        rightMin = new DigitalInput(0);
+        rightMax = new DigitalInput(0);
+        rightMin = new DigitalInput(1);
         rightStat = new DigitalInput(2);
 
         leftExtend = new Solenoid(5);
         leftRetract = new Solenoid(2);
-
         rightExtend = new Solenoid(3);
         rightRetract = new Solenoid(4);
 
@@ -174,14 +188,14 @@ public class Robot extends SampleRobot {
         grabber = new Grabber(leftRetract, leftExtend, rightRetract, rightExtend, leftMin, rightMin);//Creates grabber with solenoids
         roller = new Roller(leftRoll, rightRoll, leftStat, rightStat);//Creates roller with speed controllers
 
-        Teleop teleop = new Teleop(dualstick, joy); //Creates teleop with two controllers
+        teleop = new Teleop(dualstick, joy); //Creates teleop with two controllers
         teleop.init(robotDrive, lifter, grabber, roller);//Initializes teleop
 
+        addTickable(this::otherMethod);
+        addTickable(teleop);
         addTickable(lifter);
         addTickable(grabber);
         addTickable(roller);
-        addTickable(teleop);
-
         while (true) {
             Iterator<Tickable> it = tickables.iterator();
             while (it.hasNext()) {
@@ -193,6 +207,26 @@ public class Robot extends SampleRobot {
             } catch (Exception x) {
             }
         }
+
+    }
+
+    private void otherMethod() {
+        SmartDashboard.putString("Flaps", grabber.toString());
+        SmartDashboard.putString("Elevator Status", lifter.toString());
+        SmartDashboard.putBoolean("Crate in Loader: ", !leftStat.get() && !rightStat.get());
+        SmartDashboard.putString("Roller Direction: ", roller.toString());
+        SmartDashboard.putBoolean("Half Speed: ", dualstick.getBumper(GenericHID.Hand.kLeft)
+                && dualstick.getBumper(GenericHID.Hand.kRight));
+    }
+
+    @Override
+    public void operatorControl() {
+        System.out.println("Called");
+    }
+
+    @Override
+    public void autonomous() {
+        super.autonomous(); //To change body of generated methods, choose Tools | Templates.
 
     }
 

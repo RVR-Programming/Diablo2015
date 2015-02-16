@@ -107,7 +107,8 @@ public class Lifter implements Tickable {
         leftSpeed = -1;
         rightSpeed = -1;
     }
-    public void stop(){
+
+    public void stop() {
         leftSpeed = 0;
         rightSpeed = 0;
     }
@@ -119,8 +120,8 @@ public class Lifter implements Tickable {
         loweredLeft = !leftMin.get();
         loweredRight = !rightMin.get();
         raisedLeft = !leftMax.get();
-        raisedRight =!rightMax.get();
-        
+        raisedRight = !rightMax.get();
+
         if (loweredLeft && leftSpeed < 0) {
             leftSpeed = 0;
         }
@@ -130,10 +131,24 @@ public class Lifter implements Tickable {
         if (raisedLeft && leftSpeed > 0) {
             leftSpeed = 0;
         }
-        if(raisedRight && rightSpeed > 0){
+        if (raisedRight && rightSpeed > 0) {
             rightSpeed = 0;
         }
         left.set(leftSpeed);
         right.set(rightSpeed);
+    }
+
+    public String toString() {
+        if (!leftMax.get() && !rightMax.get()) {
+            return "FULLY RAISED";
+        } else if (!leftMin.get() && !rightMin.get()) {
+            return "FULLY LOWERED";
+        } else if (leftSpeed > 0) {
+            return "DOWN";
+        } else if (leftSpeed < 0) {
+            return "UP";
+        } else {
+            return "STOPPED";
+        }
     }
 }

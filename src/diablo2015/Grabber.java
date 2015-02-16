@@ -33,14 +33,20 @@ import edu.wpi.first.wpilibj.Solenoid;
 public class Grabber implements Tickable {
 
     /**
-     * The solenoid for the left flap of the grabber.
+     * The solenoid that extends the left flap of the grabber.
      */
     private final Solenoid leftExtend;
     /**
-     * The solenoid for the right flap of the grabber.
+     * The solenoid that retracts the left flap of the grabber.
      */
     private final Solenoid leftRetract;
+    /**
+     * The solenoid that extends the right flap of the grabber.
+     */
     private final Solenoid rightExtend;
+    /**
+     * The solenoid that retracts the right flap of the grabber.
+     */
     private final Solenoid rightRetract;
     /**
      * The limit switch for the bottom of the left side of the elevator.
@@ -57,21 +63,23 @@ public class Grabber implements Tickable {
 
     /**
      *
-     * @param left The solenoid for the left flap
-     * @param right The solenoid for the right flap
+     * @param leftExtend The solenoid for extending the left flap
+     * @param leftRetract The solenoid for retracting the left flap
+     * @param rightExtend The solenoid for extending the right flap
+     * @param rightRetract The solenoid that retracts the right flap
      * @param leftMin The left limit switch that tells if the lifter is lowered
      * @param rightMin The right limit switch that tells if the lifter is
      * lowered
      *
      */
-    public Grabber(Solenoid leftExtend, Solenoid leftRetract, Solenoid rightExtend,Solenoid rightRetract, DigitalInput leftMin, DigitalInput rightMin) {//Initializes all pistons
+    public Grabber(Solenoid leftExtend, Solenoid leftRetract, Solenoid rightExtend, Solenoid rightRetract, DigitalInput leftMin, DigitalInput rightMin) {//Initializes all pistons
         this.leftExtend = leftExtend;
         this.leftRetract = leftRetract;
         this.rightExtend = rightExtend;
         this.rightRetract = rightRetract;
         this.leftMin = leftMin;
         this.rightMin = rightMin;
-        
+
         rightRetract.set(false);
         leftRetract.set(false);
         rightExtend.set(true);
@@ -84,12 +92,11 @@ public class Grabber implements Tickable {
      * elevator is fully lowered.
      */
     public void grab() { //Extends all pistons to grab crate
-       // if (lowered) { // Only works when lifter fully lowered
-            leftRetract.set(false);
-            rightRetract.set(false);
-            leftExtend.set(true);
-            rightExtend.set(true);
-
+        // if (lowered) { // Only works when lifter fully lowered
+        leftRetract.set(false);
+        rightRetract.set(false);
+        leftExtend.set(true);
+        rightExtend.set(true);
         //}
     }
 
@@ -99,11 +106,10 @@ public class Grabber implements Tickable {
      */
     public void release() {//Retracts all pistons to release crate
         //if (lowered) {   // Only works when fully lowered
-            leftExtend.set(false);
-            rightExtend.set(false);
-            leftRetract.set(true);
-            rightRetract.set(true);
-            
+        leftRetract.set(true);
+        rightRetract.set(true);
+        leftExtend.set(false);
+        rightExtend.set(false);
         //}
     }
 
@@ -113,6 +119,14 @@ public class Grabber implements Tickable {
      */
     public void tick() {
         lowered = rightMin.get() && leftMin.get();
+    }
+    @Override
+    public String toString(){
+        if(leftRetract.get() == true){
+            return "EXTENDED";
+        } else{
+            return "RETRACTED";
+        }
     }
 
 }
