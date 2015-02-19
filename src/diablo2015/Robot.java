@@ -25,14 +25,19 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotDrive;
-import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.util.HashSet;
-import java.util.Iterator;
+
+//IMPORTANT! This 'imports' the constants from the PhysicalConstants class into
+//the current namespace. This means you can write LIFT_LEFT_MAX instead of
+//PhysicalConstants.LIFT_LEFT_MAX. That is where the variables not defined in
+//this file are coming from.
+import static diablo2015.PhysicalConstants.*;
 
 /**
  * Our 2015 Recycle Rush Robot.
@@ -43,7 +48,7 @@ import java.util.Iterator;
  *
  * @author Erich Maas
  */
-public class Robot extends SampleRobot {
+public class Robot extends RobotBase {
 
     /**
      * The amount of time, in milliseconds, between each successive periodic
@@ -73,49 +78,45 @@ public class Robot extends SampleRobot {
      */
     Joystick joy;
     /**
-     * Teleop for the robot.
-     */
-    Teleop teleop;
-    /**
      * The roller we use to pull totes into our robot.
      */
-    DigitalInput leftMin;
+    DigitalInput lifterLeftMin;
     /**
      * Limit switch at bottom right of elevator.
      */
-    DigitalInput rightMin;
+    DigitalInput lifterRightMin;
     /**
      * Limit switch at top left of elevator.
      */
-    DigitalInput leftMax;
+    DigitalInput lifterLeftMax;
     /**
      * Limit switch at top right of elevator.
      */
-    DigitalInput rightMax;
+    DigitalInput lifterRightMax;
     /**
      * Limit switch that checks if a tote is in the robot.
      */
-    DigitalInput leftStat;
+    DigitalInput rollerLeftLimit;
     /**
      * Limit switch that checks if a tote is in the robot.
      */
-    DigitalInput rightStat;
+    DigitalInput rollerRightLimit;
     /**
      * The solenoid for the piston that extends the left-flap of the grabber.
      */
-    Solenoid leftExtend;
+    Solenoid grabberLeftExtend;
     /**
      * The solenoid for the piston that retracts the left-flap of the grabber.
      */
-    Solenoid leftRetract;
+    Solenoid grabberLeftRetract;
     /**
      * The solenoid for the piston that extends the right-flap of the grabber.
      */
-    Solenoid rightExtend;
+    Solenoid grabberRightExtend;
     /**
      * The solenoid for the piston that retracts the right-flap of the grabber.
      */
-    Solenoid rightRetract;
+    Solenoid grabberRightRetract;
     /**
      * The flight-stick that we use to control the manipulators on our robot.
      */
@@ -146,16 +147,54 @@ public class Robot extends SampleRobot {
     Relay rightRoll;
 
     /**
+     * The current object that controls the robot. It should be an instance of
+     * Autonomous or Teleop (or null if disabled), usually.
+     */
+    private Tickable currentControl;
+
+    private Mode mode = Mode.DISABLED;
+
+    /**
      * A set of objects to be periodically ticked.
      */
     private final HashSet<Tickable> tickables = new HashSet<>();
 
     /**
-     * The main point of entry for the program.
-     *
-     * The FIRST library will call this method upon the initialization of the
-     * Robot, that is, when the Robot turns on and the roboRIO is booted.
+     * Construct a new Robot. This initializes all of the hardware on the Robot.
      */
+    public Robot() {
+        //Initialize the mechanisms
+        rightLift = new Victor(LIFT_RIGHT);
+        leftLift = new Victor(LIFT_LEFT);
+
+        leftRoll = new Relay(ROLLER_LEFT);
+        rightRoll = new Relay(ROLLER_RIGHT);
+
+        lifterLeftMax = new DigitalInput(LIFT_LEFT_MAX);
+        lifterLeftMin = new DigitalInput(LIFT_LEFT_MIN);
+        lifterRightMax = new DigitalInput(LIFT_RIGHT_MAX);
+        lifterRightMin = new DigitalInput(LIFT_RIGHT_MIN);
+        rollerLeftLimit = new DigitalInput(ROLLER_LEFT_LIMIT);
+        rollerRightLimit = new DigitalInput(ROLLER_RIGHT_LIMIT);
+
+        grabberLeftExtend = new Solenoid(GRABBER_LEFT_EXTEND);
+        grabberLeftRetract = new Solenoid(GRABBER_LEFT_RETRACT);
+        grabberRightExtend = new Solenoid(GRABBER_RIGHT_EXTEND);
+        grabberRightRetract = new Solenoid(GRABBER_RIGHT_RETRACT);
+
+        robotDrive = new RobotDrive(new Talon(DRIVE_REAR_LEFT),
+                new Talon(DRIVE_FRONT_LEFT),
+                new Talon(DRIVE_REAR_RIGHT),
+                new Talon(DRIVE_FRONT_RIGHT));
+
+        dualstick = new DualStickController(PORT_DUALSTICK);
+        joy = new Joystick(PORT_FLIGHTSTICK);
+
+        lifter = new Lifter(leftLift, rightLift, lifterLeftMin, lifterLeftMax, lifterRightMin, lifterRightMax);
+        grabber = new Grabber(grabberLeftRetract, grabberLeftExtend, grabberRightRetract, grabberRightExtend, lifterLeftMin, lifterRightMin);
+        roller = new Roller(leftRoll, rightRoll, rollerLeftLimit, rollerRightLimit);
+    }
+
     @Override
     public void robotMain() {
         //TODO:
@@ -203,41 +242,114 @@ public class Robot extends SampleRobot {
         addTickable(grabber);
         addTickable(roller);
         while (true) {
-            Iterator<Tickable> it = tickables.iterator();
-            while (it.hasNext()) {
-                Tickable t = it.next();//Ticks all tickable things
-                t.tick();
-            }
             try {
-                Thread.sleep(TICK_PERIOD);//Waits 50 milisecs
+                tick();
+                Thread.sleep(TICK_PERIOD);
             } catch (Exception x) {
+                x.printStackTrace(System.err);
             }
         }
-
     }
 
-    private void otherMethod() {
+    /**
+     * Ticks each tickable in the list of tickables.
+     */
+    public void tick() {
+        //Tick each tickable
+        tickables.stream().forEach(Tickable::tick);
+    }
+
+    /**
+     * Update the robot mode to the current mode dictated by FMS/the Driver
+     * Station.
+     */
+    private void updateMode() {
+        Mode previousMode = mode;
+        mode = getCurrentMode();
+        if (mode != previousMode) {
+            switchToMode(mode);
+        }
+    }
+
+    private Mode getCurrentMode() {
+        if (isDisabled()) {
+            return Mode.DISABLED;
+        } else if (isAutonomous()) {
+            return Mode.AUTO;
+        } else if (isOperatorControl()) {
+            return Mode.TELEOP;
+        } else {
+            return Mode.DISABLED;
+        }
+    }
+
+    private void switchToMode(Mode mode) {
+        switch (mode) {
+            case AUTO:
+                switchToAuto();
+                break;
+            case TELEOP:
+                switchToTeleop();
+                break;
+            case DISABLED:
+                disable();
+                break;
+        }
+    }
+
+    /**
+     * Set the robot mode to teleop.
+     */
+    private void switchToTeleop() {
+        removeCurrentControl();
+        Teleop teleop = new Teleop(dualstick, joy);
+        teleop.init(robotDrive, lifter, grabber, roller);
+        currentControl = teleop;
+        addTickable(currentControl);
+    }
+
+    /**
+     * Set the robot mode to autonomous.
+     */
+    private void switchToAuto() {
+        removeCurrentControl();
+        Autonomous auto = new Autonomous();
+        currentControl = auto;
+        addTickable(currentControl);
+    }
+
+    /**
+     * Switch the robot mode to disabled.
+     */
+    private void disable() {
+        removeCurrentControl();
+        currentControl = null;
+    }
+
+    /**
+     * Remove the currentControl from the list of tickables if it is not null.
+     */
+    private void removeCurrentControl() {
+        if (currentControl != null) {
+            removeTickable(currentControl);
+        }
+    }
+
+    /**
+     * Updates the information on the Smart Dashboard.
+     */
+    private void updateDashboard() {
         SmartDashboard.putString("Flaps", grabber.toString());
         SmartDashboard.putString("Elevator Status", lifter.toString());
         SmartDashboard.putString("Roller Direction", roller.toString());
         SmartDashboard.putBoolean("Crate in Loader", !leftStat.get() && !rightStat.get());
     }
 
-    @Override
-    public void operatorControl() {
-        System.out.println("Called");
-    }
-
-    @Override
-    public void autonomous() {
-        super.autonomous(); //To change body of generated methods, choose Tools | Templates.
-
-    }
-
     /**
      * Adds a Tickable object to the list of Tickable objects. These objects'
      * tick methods will be, synchronously, and in no particular order, invoked
-     * periodically, with a 50 millisecond gap in between each iteration.
+     * periodically, with a TICK_PERIOD millisecond gap in between each
+     * iteration.
      *
      * @param tickable the object that should be added to the set
      */
@@ -253,4 +365,10 @@ public class Robot extends SampleRobot {
     public void removeTickable(Tickable tickable) {//Removes object from list
         tickables.remove(tickable);
     }
+
+    private enum Mode {
+
+        AUTO, TELEOP, DISABLED;
+    }
+
 }
