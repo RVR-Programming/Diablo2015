@@ -32,9 +32,9 @@ import edu.wpi.first.wpilibj.Relay;
 public class Roller implements Tickable {
 
     /**
-     * Time that the roller will spin for. Set to 3 seconds.
+     * Time that the roller will spin for.
      */
-    private final int ROLLER_TIME = (int) (3000 / Robot.TICK_PERIOD);
+    private final int ROLLER_TIME = (int) (2500 / Robot.TICK_PERIOD);
 
     /**
      * Counter for the tick method.
@@ -49,14 +49,20 @@ public class Roller implements Tickable {
      */
     private final Relay right;
     /**
-     * Limit switch that checks if tote is in robot
+     * Limit switch that checks if tote is in robot.
      */
     private final DigitalInput leftStat;
+    /**
+     * Limit switch that checks if tote is in robot.
+     */
     private final DigitalInput rightStat;
     /**
-     * Sets if the rollers will go in, out, or be stopped
+     * Sets if the left roller will go in, out, or be stopped.
      */
     private int leftSpeed = 0;
+    /**
+     * Sets if the right roller will go in, out, or be stopped.
+     */
     private int rightSpeed = 0;
 
     /**
@@ -75,7 +81,7 @@ public class Roller implements Tickable {
     }
 
     /**
-     * Both Rollers are set to pull in at max speed for 3 seconds. Motors spin 
+     * Both Rollers are set to pull in at max speed for 3 seconds. Motors spin
      * in opposite directions.
      */
     public void in() { //Both rollers go in max speed
@@ -85,7 +91,7 @@ public class Roller implements Tickable {
     }
 
     /**
-     * Both Rollers are set to push out at max speed for 3 seconds. Motors spin 
+     * Both Rollers are set to push out at max speed for 3 seconds. Motors spin
      * in opposite directions.
      */
     public void out() {//Both rollers go out max speed
@@ -126,13 +132,14 @@ public class Roller implements Tickable {
             }
         }
     }
+
     @Override
-    public String toString(){
-        if(leftSpeed < 0){
+    public String toString() {
+        if (leftSpeed < 0) {
             return "OUT";
-        } else if(leftSpeed > 0){
+        } else if (leftSpeed > 0) {
             return "IN";
-        } else{
+        } else {
             return "OFF";
         }
     }

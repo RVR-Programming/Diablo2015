@@ -123,9 +123,9 @@ public class Grabber implements Tickable {
     @Override
     public String toString(){
         if(leftRetract.get() == true){
-            return "EXTENDED";
+            return "UP";
         } else{
-            return "RETRACTED";
+            return "DOWN";
         }
     }
 

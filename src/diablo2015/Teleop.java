@@ -24,6 +24,7 @@ package diablo2015;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This class handles interaction between the drivers, the controllers, and the
@@ -40,7 +41,7 @@ public class Teleop implements Tickable {
      * An instance of the DualStickController class representing one of the
      * controllers.
      */
-    private final DualStickController dualStick;
+    private final DualStickController dualstick;
     /**
      * An instance of the Joystick class representing the other controller.
      */
@@ -100,14 +101,17 @@ public class Teleop implements Tickable {
         }
 
         double leftValue, rightValue;
-        leftValue = (dualStick.getY(GenericHID.Hand.kLeft) * -1);//Gets left stick
-        rightValue = (dualStick.getY(GenericHID.Hand.kRight) * -1);// Gets right stick 
-        rd.tankDrive(leftValue, rightValue);// Sets up tank drive for robot
+        leftValue = (dualstick.getY(GenericHID.Hand.kLeft) * -1);//Gets left stick
+        rightValue = (dualstick.getY(GenericHID.Hand.kRight) * -1);// Gets right stick 
+        rd.tankDrive(leftValue * .6, rightValue * .6);// Sets up tank drive for robot
 
         //Set up all buttons for lifter, grabber, and roller
-        if (dualStick.getBumper(GenericHID.Hand.kLeft) && dualStick.getBumper(GenericHID.Hand.kRight)) {
-            rd.tankDrive(leftValue * .5, rightValue * .5);//On both bumpers, go half speed
+        if (dualstick.getBumper(GenericHID.Hand.kLeft) && dualstick.getBumper(GenericHID.Hand.kRight)) {
+            rd.tankDrive(leftValue, rightValue);//On both bumpers, go half speed
         }
+
+        SmartDashboard.putBoolean("Fullspeed", dualstick.getBumper(GenericHID.Hand.kLeft)
+                && dualstick.getBumper(GenericHID.Hand.kRight));
 
         //BUTTONS WILL NEED TO BE CHANGED
         if (joy.getRawButton(1)) {//On joystick trigger
@@ -138,7 +142,7 @@ public class Teleop implements Tickable {
      * @param joy instance of the flight stick controller to use
      */
     public Teleop(DualStickController dualStick, Joystick joy) {//Requires a controller and joystick
-        this.dualStick = dualStick;
+        this.dualstick = dualStick;
         this.joy = joy;
     }
 

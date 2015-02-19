@@ -140,9 +140,9 @@ public class Lifter implements Tickable {
 
     public String toString() {
         if (!leftMax.get() && !rightMax.get()) {
-            return "FULLY RAISED";
-        } else if (!leftMin.get() && !rightMin.get()) {
             return "FULLY LOWERED";
+        } else if (!leftMin.get() && !rightMin.get()) {
+            return "FULLY RAISED";
         } else if (leftSpeed > 0) {
             return "DOWN";
         } else if (leftSpeed < 0) {

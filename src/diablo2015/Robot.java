@@ -191,7 +191,13 @@ public class Robot extends SampleRobot {
         teleop = new Teleop(dualstick, joy); //Creates teleop with two controllers
         teleop.init(robotDrive, lifter, grabber, roller);//Initializes teleop
 
-        addTickable(this::otherMethod);
+        addTickable(new Tickable() {
+
+            @Override
+            public void tick() {
+                otherMethod();
+            }
+        });
         addTickable(teleop);
         addTickable(lifter);
         addTickable(grabber);
@@ -213,10 +219,8 @@ public class Robot extends SampleRobot {
     private void otherMethod() {
         SmartDashboard.putString("Flaps", grabber.toString());
         SmartDashboard.putString("Elevator Status", lifter.toString());
-        SmartDashboard.putBoolean("Crate in Loader: ", !leftStat.get() && !rightStat.get());
-        SmartDashboard.putString("Roller Direction: ", roller.toString());
-        SmartDashboard.putBoolean("Half Speed: ", dualstick.getBumper(GenericHID.Hand.kLeft)
-                && dualstick.getBumper(GenericHID.Hand.kRight));
+        SmartDashboard.putString("Roller Direction", roller.toString());
+        SmartDashboard.putBoolean("Crate in Loader", !leftStat.get() && !rightStat.get());
     }
 
     @Override
