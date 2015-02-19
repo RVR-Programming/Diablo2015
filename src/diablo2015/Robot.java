@@ -196,48 +196,11 @@ public class Robot extends RobotBase {
     }
 
     @Override
-    public void robotMain() {
-        //TODO:
-        ///////////////////////////////////
-        // ALL PORTS NEED TO BE ASSIGNED //
-        ///////////////////////////////////
-        //THE ROLLERS ARE SPIKES, THE LIFTER IS VICTORS, AND THE TANK DRIVE IS TALONS
-        rightLift = new Victor(2);
-        leftLift = new Victor(7);
-
-        leftRoll = new Relay(0);
-        rightRoll = new Relay(1);
-
-        leftMax = new DigitalInput(8);
-        leftMin = new DigitalInput(9);
-        leftStat = new DigitalInput(7);
-        rightMax = new DigitalInput(0);
-        rightMin = new DigitalInput(1);
-        rightStat = new DigitalInput(2);
-
-        leftExtend = new Solenoid(5);
-        leftRetract = new Solenoid(2);
-        rightExtend = new Solenoid(3);
-        rightRetract = new Solenoid(4);
-
-        robotDrive = new RobotDrive(new Talon(9), new Talon(8), new Talon(0), new Talon(1));
-        dualstick = new DualStickController(0); //Creates dualstick controller
-        joy = new Joystick(1);//Create sjoystick
-        lifter = new Lifter(leftLift, rightLift, leftMin, leftMax, rightMin, rightMax);//Creates lifter with Speed controllers and limit switches
-        grabber = new Grabber(leftRetract, leftExtend, rightRetract, rightExtend, leftMin, rightMin);//Creates grabber with solenoids
-        roller = new Roller(leftRoll, rightRoll, leftStat, rightStat);//Creates roller with speed controllers
-
-        teleop = new Teleop(dualstick, joy); //Creates teleop with two controllers
-        teleop.init(robotDrive, lifter, grabber, roller);//Initializes teleop
-
-        addTickable(new Tickable() {
-
-            @Override
-            public void tick() {
-                otherMethod();
-            }
-        });
-        addTickable(teleop);
+    public void startCompetition() {
+        Tickable dashboardUpdater = this::updateDashboard;
+        Tickable modeUpdater = this::updateMode;
+        addTickable(dashboardUpdater);
+        addTickable(modeUpdater);
         addTickable(lifter);
         addTickable(grabber);
         addTickable(roller);
@@ -342,7 +305,8 @@ public class Robot extends RobotBase {
         SmartDashboard.putString("Flaps", grabber.toString());
         SmartDashboard.putString("Elevator Status", lifter.toString());
         SmartDashboard.putString("Roller Direction", roller.toString());
-        SmartDashboard.putBoolean("Crate in Loader", !leftStat.get() && !rightStat.get());
+        SmartDashboard.putBoolean("Crate in Loader", 
+                !rollerLeftLimit.get() && !rollerRightLimit.get());
     }
 
     /**
