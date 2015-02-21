@@ -5,173 +5,20 @@ Terminology
 First, some terminology.
 
 Project:        the collection of files that go in to making the Robot run.
-Source files:   the files located within the 'src' directory. These files are written entirely in
-                    Java, and are the crux of the program.
+Source files:   the files located within the 'src' directory. These files are
+                written entirely in Java, and are the crux of the program.
 JVM:            the program that is able to execute Java bytecode.
-Compile:        the translation of human-readable pseudo-english text into JVM-parsable bytecode.
-                    Build is mostly a synonym for compile.
-Build script:   a script, build.xml in particular, that is read by a certain tool, in this
-                    case the tool is ant. The build script builds the project, and then distributes it. It is the
-                    job of this script to get the necessary files on to the robot.
-Library:        a pre-compiled project that provides tools and utilities for use by the Project.
-WPILib:         the library distributed by FIRST, developed by Worcester Polytechnic Institute. It is 
-                    this library which deals with the interaction between low level electronic
-                    mechanisms and the high level code in this Project.
-Environment:    the collection of programs and settings surrounding a particular task. Usually, this
-                    refers to the 'development environment', or the set of tools used for writing, running,
-                    testing, (etc.) code.
-IDE:            short for 'Intergrated Development Environment', this is one tool which integrates many
-                    other tools of the development environment.
-Plugin:         an extension to a certain application.
-
-
-===========
-Environment
-===========
-
-The build environment in previous years has been the Java ME SDK, ANT, and the WPI libraries. This year, 2015,
-FIRST, with the new, more powerful roboRIO, switched to the Java SE JDK 1.8. The Java ME SDK is a more 
-lightweight, severely limited version of the JDK based off of JDK version 1.4, and lacks hundreds of features
-present in the Standard Edition development kit.
-
-The development environment that we have used in the past has been NetBeans and the tools it provides, and the 
-base tools provided by Windows XP. This year, we have mostly moved over to Debian GNU/Linux as an operating
-system, and the much higher quality tools provided by that OS. However, despite FIRST's move to officially
-supporting the Eclipse IDE, we have remained using NetBeans.
-
-The key to being able to use either IDE (or any IDE (or none at all)) is that the build environment remains
-the same regardless of that aspect of the development environment. This project may be built on any system
-with a build environment equipped with ANT and the Java SE JDK 1.8. NetBeans and Eclipse both either
-provide these or hook into them.
-
-Since FIRST now only distributes plugins for Eclipse, we do not use them in our development environment, as
-we do not use Eclipse. However, to understand why these plugins are unnecessary, you need to understand what
-these plugins accomplish. Here are their tasks:
-
-o provide a button or task for creating a new project associated with the WPI libraries
-o extract the libraries and build scripts
-
-The first task is not too challenging to solve without the plugins. Since this project is already created, a
-button to create a new project does not change much. If, for whatever reason, this project is loaded into a
-environment unaware of the proper libraries, one can set them by adding the libraries in
-[HOME]/wpilib/java/current/lib, where [HOME] is the home directory of the user (though this path may change
-in future versions of wpilib).
-
-The second task is less pleasant, since those libraries and scripts are necessary. There are two fairly simple
-solutions, however:
-
-o temporarily install the platform compatible with those plugins, install them, and then uninstall the platform
-o extract the plugins (they are simple archives) and find the files that need to go under [HOME]/wpilib
-
-This is a one time problem, and not too much of a concern.
-
-
-======
-Source
-======
-
-The source code is located in src, broken up into several source files, one for each class. Every source file
-is written completely in Java. There is a class for each mechanism on the robot, as well as other classes for
-more abstract things such as teleop.
-
-The 'main' class, or the class that should be treated as the first thing to run, is currently diablo2015.Robot.
-The WPI library will create an instance of this class and run the method startCompetition().
-
-Physical constants, things related to the physical properties of the robot and the electronics thereof, are
-placed in the PhysicalConstants class under descriptive names along with a short comment on what that constant
-represents. This includes dimensions, as well as all channel numbers. Because of this, the PhysicalConstants
-class provides a convenient and easier way to change these constants should, for example, a port number change
-in the wiring.
-
-The Tickable interface describes a class that has a method 'tick'. More intentionally, it describes a class
-which should be, and has the ability to be called periodically. Classes that implement this interface must
-implement a method called 'tick', which is of type void and takes no arguments. Objects of these classes may
-be added to a list of Tickable objects which are called periodically, where the list is stored in the Robot
-class and the period is dictated by a constant in the Robot class.
-
-The main loop in the robot class loops over the list of Tickable objects and calls each periodically. One
-such object detects if the current mode (e.g., 'Operater Control' or 'Autonomous') has changed, and, if 
-so, switches out the object that currently controls the robot to an instance of the proper class
-(e.g., an instance of Teleop or Autonomous).
-
-The Robot class extends RobotBase of the WPI library. This class provides information about the state
-of the Robot such as the mode it is in, and initializes the Robot. FIRST recommends you extend one of
-SampleRobot, IterativeRobot, and CommandBasedRobot. SampleRobot calls the method robotMain, and then enters
-an infinite loop detecting if the mode has changed and calling the appropiate method. However, since our
-Robot class enters a loop of its own, these two are not compatible. CommandBasedRobot is a very simplified
-model similar to Robot-C. IterativeRobot accomplishes a similar goal to our own, that is, many periodic tasks,
-but in a less flexible way. We have chosen, then, to extend RobotBase.
-
-All mechanisms should be initialized in the constructor of the Robot class. Mechanisms that have subcomponents,
-for example, the lifter which has two motors and four limit switches, should be initialized last and passed
-as constructor arguments their sub components.
-
-
-=====
-Build
-=====
-
-As specified before, the project is built using ANT from Apache. The main build script is build.xml,
-located in the root of the project directory, which imports from build scripts and properties files in the 
-[HOME]/wpilib directory, where [HOME] is the user's home directory. The build scripts are XML files, written
-for Apache ANT. ANT build scripts are defined in terms of 'targets', which must be reached. A target is the
-goal you want to achieve; 'compile', 'javadoc', or 'deploy' are examples. Targets may depend on other
-targets. In that case, all targets that a target depends on must be reached before the target may start
-being executed. For example, 'deploy' depends on there being compiled code, so it depends upon the 'compile'
-target, and 'ant deploy' will run 'compile' before actually running 'deploy'. More information about ANT is
-available as a manpage on *nix systems with ANT installed ('man ant'), or online.
-
-It is the job of the WPI build scripts to deploy new code onto the robot. Unlike previous years, code is
-not flashed, in the strictest sense of the word, rather, an old file is replaced by a new one. This means
-that deployment times should be consistently quick. This is done mostly by SSH and SFTP by extension.
-
-The build scripts in the wpilib directory, as any file in that directory, should not be changed. Necessary
-changes (though there shouldn't be many) should be made in the build.xml file in the project directory.
-
-The most important lines in build.xml are the ones that import the build and properties files from the
-wpilib directory, as well as the static property definitions. In the case that there is a directory
-structure change of the wpilib directory in future years, the paths in build.xml must be updated to
-reflect the locations of the new files. In addition, if the location of the main class changes from
-diablo2015.Robot, as it should next year, the property robot.class must be updated to reflect that.
-
-Following that, an empty target 'run' is defined that depends on the target 'deploy'. This is so that
-'ant run', and, by extension, the Run Project options in NetBeans will deploy the project to the Robot.
-After that are two javadoc targets, one which does actual work, and an empty one that depends upon the first.
-These targets are taken from NetBeans default build script and altered for brevity and simplicity (though with
-less flexibility).
-
-To build this project from the command-line, first ensure 'ant' is installed. Running 'ant -version' should
-print out a version number and build date. If ANT is not installed on a Debian-based system, it may be installed
-by running 'apt-get install ant' as root or 'sudo apt-get install ant'. Navigate to the project directory in
-your terminal, and run 'ant deploy' to deploy the project, or 'ant javadoc' to build documentation for the
-project.
-
-To build this project from NetBeans, click on the green right-facing arrow at the top to deploy, or right click
-on the project and select 'Generate Javadoc' to build javadoc.
-
-
-=============
-Documentation
-=============
-
-Besides this readme, the source files are documented using the javadoc system. Javadoc is both a syntax and a tool
-for parsing that syntax. More particularly, block-style comments before methods, fields, classes, et
-cetera in a certain style will be understood as 'javadoc' comments. The javadoc tool will then compile these
-comments into HTML webpages containing the documentation. These comments are also kept in the source files, and
-are easily understood.
-
-To view the Java documentation, navigate to the doc directory in the project directory, and open index.html in
-a browser.
-
-
-===============
-Version Control
-===============
-
-TODO
-
-
-===============
+Compile:        the translation of human-readable pseudo-english text into 
+                JVM-parsable bytecode. Build is mostly a synonym for compile.
+Build script:   a script, build.xml in particular, that is read by a certain 
+                tool, in this case the tool is ant. The build script builds the
+                project, and then distributes it. It is the job of this script
+                to get the necessary files on to the robot.
+Library:        a pre-compiled project that provides tools and utilities for
+                use by the Project.
+WPILib:         the library distributed by FIRST, developed by Worcester 
+                Polytechnic Institute. It is this library which deals with the
+                interaction between low level electronic mechanisms and the
 Troubleshooting
 ===============
 
