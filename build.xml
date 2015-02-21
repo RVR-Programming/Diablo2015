@@ -2,70 +2,44 @@
 
 <project name="Diablo2015" default="deploy">
 
-	<!--
-	The following properties can be defined to override system level
-	settings. These should not be touched unless you know what you're
-	doing. The primary use is to override the wpilib version when
-	working with older robots that can't compile with the latest
-	libraries.
-	-->
-
-	<!-- By default the system version of WPI is used -->
-	<!-- <property name="version" value=""/> -->
-
-	<!-- By default the system team number is used -->
+    <!-- Static properties. Be sure to update these in case of changes.
+         'version' is the Java version as understood by WPILib. This
+         should remain as 'current'. -->
 	<property name="team-number" value="87"/>
-
-	<!-- By default the target is set to 10.TE.AM.2 -->
-	<!-- <property name="target" value=""/> -->
-
-	<!-- Any other property in build.properties can also be overridden. -->
-
-	<property file="${user.home}/wpilib/wpilib.properties"/>
-	<property file="${user.home}/wpilib/java/${version}/ant/build.properties"/>
+    <property name="dist.javadoc.dir" value="doc" />
 	<property name="robot.class" value="diablo2015.Robot" />
-	<property name="dist.javadoc.dir" value="dist/javadoc" />
+    <property name="version" value="current" />
 
-	<!--<import file="nbproject/build-impl.xml"/> -->
+    <!-- Import the build scripts and properties files from WPILib. The targets 
+         defined there do the actual work. -->
+	<property file="${user.home}/wpilib/java/${version}/ant/build.properties"/>
 	<import file="${wpilib.ant.dir}/build.xml"/>
 
-	<target name="run" depends="deploy" />
+    <!-- This makes running the project equivalent to deploying it. -->
+    <!-- We also build documentation here. This should only take a couple seconds,
+         and keeps the documentation updated. You may remove it if it is an issue. -->
+    <target name="run" depends="deploy,-javadoc-build" description="Deploy the jar and rebuild documentation." />
 
-	<!-- Javadoc section, imported from NetBean's build-impl.xml -->
+    <!-- Javadoc target. This was mostly copied from the default NetBeans build-impl.xml. -->
 	<target name="-javadoc-build">
 		<mkdir dir="${dist.javadoc.dir}"/>
-		<condition else="" property="javadoc.endorsed.classpath.cmd.line.arg" value="-J${endorsed.classpath.cmd.line.arg}">
-		    <and>
-			<isset property="endorsed.classpath.cmd.line.arg"/>
-			<not>
-			    <equals arg1="${endorsed.classpath.cmd.line.arg}" arg2=""/>
-			</not>
-		    </and>
-		</condition>
-		<condition else="" property="bug5101868workaround" value="*.java">
-		    <matches pattern="1\.[56](\..*)?" string="${java.version}"/>
-		</condition>
-		<javadoc additionalparam="-J-Dfile.encoding=UTF-8 ${javadoc.additionalparam}" author="${javadoc.author}" charset="UTF-8" destdir="${dist.javadoc.dir}" docencoding="UTF-8" encoding="UTF-8" failonerror="true" noindex="${javadoc.noindex}" nonavbar="${javadoc.nonavbar}" notree="${javadoc.notree}" private="${javadoc.private}" source="${javac.source}" splitindex="${javadoc.splitindex}" use="${javadoc.use}" useexternalfile="true" version="${javadoc.version}" windowtitle="${javadoc.windowtitle}">
+        <javadoc additionalparam="-J-Dfile.encoding=UTF-8" charset="UTF-8" destdir="${dist.javadoc.dir}" docencoding="UTF-8" encoding="UTF-8" failonerror="true" private="true" splitindex="false" use="true" useexternalfile="true"> 
 		    <classpath>
-			<path path="${classpath}"/>
+                <path path="${classpath}"/>
 		    </classpath>
 		    <fileset dir="src">
-			<filename name="**/*.java"/>
+                <filename name="**/*.java"/>
 		    </fileset>
-		    <fileset dir="${build.generated.sources.dir}" erroronmissingdir="false">
-			<include name="**/*.java"/>
-			<exclude name="*.java"/>
-		    </fileset>
-		    <arg line="${javadoc.endorsed.classpath.cmd.line.arg}"/>
 		</javadoc>
 		<copy todir="${dist.javadoc.dir}">
 		    <fileset dir="${src.dir}" excludes="${excludes}" includes="${includes}">
-			<filename name="**/doc-files/**"/>
+                <filename name="**/doc-files/**"/>
 		    </fileset>
-		    <fileset dir="${build.generated.sources.dir}" erroronmissingdir="false">
-			<include name="**/doc-files/**"/>
+            <fileset dir="${build.generated.sources.dir}" erroronmissingdir="false">
+                <include name="**/doc-files/**"/>
 		    </fileset>
 		</copy>
-	    </target>
-	    <target depends="-javadoc-build" description="Build Javadoc." name="javadoc"/>
+    </target>
+
+    <target depends="-javadoc-build" description="Build Javadoc." name="javadoc"/>
 </project> 
