@@ -22,7 +22,6 @@
 package diablo2015;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -64,7 +63,7 @@ public class Robot extends RobotBase {
 
     /**
      * This field represents the drive-train of the Robot, and controls its main
-     * wheels. It is initialized during {@link robotMain} with all of the speed
+     * wheels. It is initialized during the constructor with all of the speed
      * controllers that control the wheels of the drive-train.
      */
     RobotDrive robotDrive;
@@ -152,6 +151,11 @@ public class Robot extends RobotBase {
      */
     private Tickable currentControl;
 
+    /**
+     * The current mode of the Robot. This can be any of the values in the 
+     * {@link diablo2015.Robot.Mode} enum. Currently, those are Autonomous, Disabled,
+     * and Teleoperated. This is updated once every tick.
+     */
     private Mode mode = Mode.DISABLED;
 
     /**
@@ -330,8 +334,13 @@ public class Robot extends RobotBase {
         tickables.remove(tickable);
     }
 
+    /**
+     * An enum that holds the different possible modes the Robot may be in. They
+     * correspond to the modes of the FMS/Driver Station. Current possible values 
+     * are AUTO for Autonomous, TELEOP for Operator Control, and DISABLED for 
+     * disabled.
+     */
     private enum Mode {
-
         AUTO, TELEOP, DISABLED;
     }
 
