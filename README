@@ -8,7 +8,7 @@ Project:        the collection of files that go in to making the Robot run.
 Source files:   the files located within the 'src' directory. These files are
                 written entirely in Java, and are the crux of the program.
 JVM:            the program that is able to execute Java bytecode.
-Compile:        the translation of human-readable pseudo-english text into 
+Compile:        the translation of human-readable pseudo-English text into 
                 JVM-parsable bytecode. Build is mostly a synonym for compile.
 Build script:   a script, build.xml in particular, that is read by a certain 
                 tool, in this case the tool is ant. The build script builds the
@@ -24,7 +24,7 @@ Environment:    the collection of programs and settings surrounding a
                 particular task. Usually, this refers to the 
                 'development environment', or the set of tools used for
                 writing, running, testing, (etc.) code.
-IDE:            short for 'Intergrated Development Environment', this is one 
+IDE:            short for 'Integrated Development Environment', this is one 
                 tool which integrates many other tools of the development
                 environment.
 Plugin:         an extension to a certain application.
@@ -109,7 +109,7 @@ dictated by a constant in the Robot class.
 
 The main loop in the robot class loops over the list of Tickable objects and
 calls each periodically. One such object detects if the current mode (e.g.,
-'Operater Control' or 'Autonomous') has changed, and, if so, switches out the
+'Operator Control' or 'Autonomous') has changed, and, if so, switches out the
 object that currently controls the robot to an instance of the proper class
 (e.g., an instance of Teleop or Autonomous).
 
@@ -118,7 +118,7 @@ information about the state of the Robot such as the mode it is in, and
 initializes the Robot. FIRST recommends you extend one of SampleRobot,
 IterativeRobot, and CommandBasedRobot. SampleRobot calls the method robotMain,
 and then enters an infinite loop detecting if the mode has changed and calling
-the appropiate method. However, since our Robot class enters a loop of its own,
+the appropriate method. However, since our Robot class enters a loop of its own,
 these two are not compatible. CommandBasedRobot is a very simplified model
 similar to Robot-C. IterativeRobot accomplishes a similar goal to our own, that
 is, many periodic tasks, but in a less flexible way. We have chosen, then, to
@@ -187,7 +187,7 @@ to build javadoc.
 Documentation
 =============
 
-Besides this readme, the source files are documented using the javadoc system.
+Besides this README, the source files are documented using the javadoc system.
 Javadoc is both a syntax and a tool for parsing that syntax. More particularly,
 block-style comments before methods, fields, classes, et cetera in a certain
 style will be understood as 'javadoc' comments. The javadoc tool will then
@@ -212,11 +212,11 @@ which copy of the repository is the 'correct' one; this is maintained by the
 maintainers or people in charge of the project.
 
 Changes are made to git projects in discrete 'chunks' of change called commits.
-It's best to not think of the project history as a continuuous timeline of what
-changed and where, rather being a list of commits. Commiters should strive to
+It's best to not think of the project history as a continuous timeline of what
+changed and where, rather being a list of commits. Committers should strive to
 make their commits 'atomic', i.e., accomplishing one thing. A single feature
 may best be distributed among fifty commits. There is no definite rule as to
-what an 'atomic' commit is, but it should be easy to summerize the changes in
+what an 'atomic' commit is, but it should be easy to summarize the changes in
 50 characters the exact nature of those changes, in a concrete way.
 
 Commits are accompanied by commit messages, the author, and the committer. The
@@ -234,7 +234,7 @@ commits from your system, or you need to 'push' those commits onto the server.
 Pushing essentially overwrites the target's repository history with your own,
 and may normally only be done those histories are not in conflict. A
 conflicting history necessitates a 'merge', where different sets of changes to
-a repository in the same timeframe are 'merged' together. If these changes
+a repository in the same time-frame are 'merged' together. If these changes
 target completely different subsets of the files in the repository, the merge
 is done automatically. However, if there are different sets of changes to a
 single file, human intervention is required to pick which version is accepted
