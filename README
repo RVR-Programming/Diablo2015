@@ -250,4 +250,65 @@ latest version, you 'checkout' the 'master', or latest commit.
 Troubleshooting
 ===============
 
-TODO
+Q: I'm on the team, with a team programmer laptop, and I have a problem, what's
+the first thing I should do?
+A: Make sure that the laptop is booted into Debian GNU/Linux, where our
+environment is set up. If you want, you can set up the build environment in any
+Operating System, but you have to do it yourself.
+
+Q: How do I build without an IDE?
+A: Make sure ant is installed. On Debian GNU/Linux, running 'sudo apt-get
+install' will install ant. Then, navigate to the project directory, and run
+'ant deploy' to deploy to the robot, or 'ant javadoc' to build documentation.
+
+Q: My IDE gives me errors about things from edu.first.wpilibj! You must not
+being using the official platform as recommended by FIRST!
+A: That's not really a question, first off. In this case, your IDE does not
+know what libraries this project depends on. The way to set this for each IDE
+varies; for NetBeans, you made add JARs under the Library section of the
+'Project' tab. The location of the WPI libraries is under
+[HOME]/wpilib/java/current/lib/. If nothing else, the project will still
+compile and deploy to the robot despite these errors, since the library
+locations are hard-coded in the build scripts.
+
+Q: I tried building, and got an error that ANT cannot find a certain file. What
+do I do?
+A: Most likely, this is because the WPILib files are not present, or are in the
+wrong place. Check to make sure [HOME]/wpilib exists and is the current
+version. If it does not, refer to the Environment section of this README for
+instructions on how to install it.
+
+Q: You keep saying [HOME], but where is that, exactly?
+A: [HOME] means the home directory. On most *nix systems, including MacOS and
+Linux distributions, this is in /home/username/, where username is the username
+of the current user. For Windows Vista and above, this is in \Users\username\.
+For Windows NT versions prior to Vista, such as XP, this is in
+\Documents and Settings\username.
+
+Q: Build fails after get-target-ip. How do I resolve this?
+A: Make certain that you're connected to the router on the Robot, that the
+roboRIO is online, and that the router is set to access point if you're
+connected wirelessly. Also, make certain that the roboRIO is imaged properly.
+
+Q: The FTAs told me my router was in the wrong mode, or I can connect to the
+router wirelessly, but can't access the RIO. What mode should it be in?
+A: The router has two modes, Access Point, and Bridge. Basically, 'Access
+Point' creates its own network for other things to connect to whereas 'Bridge'
+is for when the router is part of another network. During competition, the
+router should always be in 'Bridge' mode so that it is part of the FMS network.
+When in development outside of competition, the router can be in 'Access Point'
+mode so that development computers can connect to it wirelessly. 
+
+
+=======
+Contact
+=======
+
+To contact the original author of this document, e-mail dmfrese@gmail.com.
+
+To contact the 2015 programming lead, e-mail knotsofunny@gmail.com.
+
+To find out who made a particular change, run 'git log' in the project
+directory, and navigate to the commit. Alternatively, run 'git blame FILENAME'
+to find out who changed a particular line in a file and what commit that change
+is associated with.
