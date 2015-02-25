@@ -202,8 +202,49 @@ directory, and open index.html in a browser.
 Version Control
 ===============
 
-TODO
+Version control systems are systems that store the history of a project and
+provide methods to update that history, merge changes, create separate
+branches, copy the project; among other things. The version control system
+we're using is called 'git', written by Linus Torvalds. Git is a distributed
+version control system, which means the entire project gets copied to all
+systems working on the project, and that git recognizes no central authority on
+which copy of the repository is the 'correct' one; this is maintained by the
+maintainers or people in charge of the project.
 
+Changes are made to git projects in discrete 'chunks' of change called commits.
+It's best to not think of the project history as a continuuous timeline of what
+changed and where, rather being a list of commits. Commiters should strive to
+make their commits 'atomic', i.e., accomplishing one thing. A single feature
+may best be distributed among fifty commits. There is no definite rule as to
+what an 'atomic' commit is, but it should be easy to summerize the changes in
+50 characters the exact nature of those changes, in a concrete way.
+
+Commits are accompanied by commit messages, the author, and the committer. The
+author is the person who made the changes, and the committer is the person
+writing the message and encapsulating the changes in a commit. Commit messages
+should start with a less-than50-character summary of the commit, for example,
+'Added half-speed buttons to Teleop', followed by a short paragraph on the
+actual specifics of the changes made. These messages are the key to navigating
+commits.
+
+All commits are made locally, that is, in the directory of the project on the
+system that you run 'git commit' on. If you want to get those changes to
+somewhere else, like a server/website, either the server needs to 'pull' those
+commits from your system, or you need to 'push' those commits onto the server.
+Pushing essentially overwrites the target's repository history with your own,
+and may normally only be done those histories are not in conflict. A
+conflicting history necessitates a 'merge', where different sets of changes to
+a repository in the same timeframe are 'merged' together. If these changes
+target completely different subsets of the files in the repository, the merge
+is done automatically. However, if there are different sets of changes to a
+single file, human intervention is required to pick which version is accepted
+for each changed part of the file.
+
+Since a version control system keeps track of changes and the entire project
+history, it is easy to revert to an older version. To do this, you 'checkout' a
+certain commit. This replaces the files in the project directory with those of
+the commit, essentially reverting all changes since then. To return to the
+latest version, you 'checkout' the 'master', or latest commit.
 
 ===============
 Troubleshooting
